@@ -3,7 +3,9 @@
 <body>
 
     <!-- Navigation -->
-    <?php include "includes/navigation.php"?>
+
+<?php include "includes/navigation.php"?>
+
     <!-- Page Content -->
     <div class="container">
         <div class="row">
@@ -11,6 +13,7 @@
             </div>
             <!-- Blog Sidebar Widgets Column -->
             <?php include "includes/sidebar.php"?>
+
         </div>
     
         <!-- /.row -->
