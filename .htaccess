@@ -1,0 +1,5 @@
+RewriteEngine on
+
+RewriteRule ^(index|contact|registration)$ $1.php [NC,L]
+
+RewriteRule ^bug/(\d+)$ bug.php?b_id=$1 [NC,L]
