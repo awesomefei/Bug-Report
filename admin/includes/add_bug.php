@@ -14,7 +14,7 @@ if(isset($_POST['create_bug'])) {
     
     $bug_description       = $_POST['bug_description'];
 
-     $bug_reporter_id        = $_SESSION['user_id'];
+    $bug_reporter_id        = $_SESSION['user_id'];
 
     $bug_close_date         = $_POST['bug_close_date'];
     
@@ -27,6 +27,7 @@ if(isset($_POST['create_bug'])) {
     $create_bug_query = mysqli_query($connection, $query);  
 
     confirmQuery($create_bug_query);
+    echo "<p class='bg-success'>bug created</p>";
    }    
 ?> 
 <form action="" method="post" enctype="multipart/form-data">    

@@ -15,6 +15,11 @@
     $targetLastname;
     $bug_comment_count;
     $bug_close_date;
+    $bug_pre_status;
+    $bug_pre_priority;
+    $bug_pre_severity;
+    $bug_pre_assignee_id;
+    $targetUseremail1;
     if(isset($_GET['b_id'])){
         $the_bug_id = $_GET['b_id'];
     }
@@ -35,9 +40,16 @@
                  $targetLastname = $row1['user_lastname'];
             }
         //bug_assignee_id
-//        $bug_priority = $row['priority'];
+        $bugAassigneeQuery="SELECT * FROM users WHERE user_id = $bug_pre_assignee_id";
+        $select_user1 = mysqli_query($connection,$bugReorterQuery);
+        while($row1 = mysqli_fetch_assoc($select_user1)){
+                 $targetUseremail1 = $row1['user_email'];
+        }     
         $bug_status = $row['status'];
+        $bug_pre_status = $row['status'];
         $bug_lastupdate = $row['lastupdate'];
+        $bug_pre_priority = $row['priority'];
+        $bug_pre_severity = $row['bug_severity'];
 ?>
                 <!-- First Blog Post -->
         <div class="col-lg-2">
@@ -132,7 +144,7 @@ while($row = mysqli_fetch_array($selct_comment_query)){
          </p>
         </div>
     </div>
-    <p font="3"><?php echo $comment_content ?></p>
+    <p font="3"><?php echo nl2br($comment_content) ?></p>
      <?php               
     }  
 }
@@ -166,30 +178,8 @@ if(isset($_POST['create_comment'])){
 }
 
     if(isset($_POST['update_bug'])){
-        $bug_pre_status = '';
-        $bug_pre_priority = '';
-        $bug_pre_severity = '';
-        $bug_pre_assignee_id = 0;
-        $targetUseremail1 = '';
         $arr = array();
-        $exsiting_query = "SELECT * FROM bug WHERE bug_id = {$the_bug_id} ";
-        $selected_bug_query = mysqli_query($connection, $exsiting_query);
-        if(confirmQuery($selected_bug_query)){
-                    echo "<h1>'hello'</h1>";
-        }
-        while($row = mysqli_fetch_assoc($selected_bug_query)){
-            echo $bug_pre_status = $row['status'];
-            echo $bug_pre_priority = $row['priority'];
-            echo $bug_pre_severity = $row['bug_severity'];
-            echo $bug_pre_assignee_id = $row['bug_assignee_id'];
-            
-            $bugAassigneeQuery="SELECT * FROM users WHERE user_id = $row[$bug_pre_assignee_id]";
-            $select_user1 = mysqli_query($connection,$bugReorterQuery);
-            while($row1 = mysqli_fetch_assoc($select_user1)){
-                 $targetUseremail1 = $row1['user_email'];
-            }            
-        }
-        
+
         $bug_status = $_POST['bug_status'];
         $bug_priority = $_POST['bug_priority'];        
         $bug_severity = $_POST['bug_serverity'];
@@ -211,27 +201,25 @@ if(isset($_POST['create_comment'])){
 
         $update_bug = mysqli_query($connection,$query);
         confirmQuery($update_bug);
-        
-        //echo "<p class='bg-success'> Post Update. </p>";
-        
+                
         //create comment automatically
         $comment_content =$_SESSION['email'] . " changed ";
         $auto_comment_content = "";
         
         if($bug_pre_status != $bug_status){ 
-                $tempString = $comment_content . "status from " . $bug_pre_status . " to". $bug_status;
+                $tempString = $comment_content . "status from " . $bug_pre_status . " to ". $bug_status;
                 array_push($arr, $tempString);
             }
         if($bug_pre_priority != $bug_priority){
-            $tempString = $comment_content . "priority from " . $bug_pre_priority. " to". $bug_priority;
+            $tempString = $comment_content . "priority from " . $bug_pre_priority. " to ". $bug_priority;
             array_push($arr, $tempString);
         }
         if($bug_pre_severity != $bug_severity){
-            $tempString = $comment_content . "severity from " . $bug_pre_severity . " to". $bug_severity;
+            $tempString = $comment_content . "severity from " . $bug_pre_severity . " to ". $bug_severity;
             array_push($arr, $tempString);
         }
         if($bug_pre_assignee_id != $bug_assignee_id){
-            $tempString = $comment_content . "asignee from " . $targetUseremail1 . " to". $user_email;
+            $tempString = $comment_content . "asignee from " . $targetUseremail1 . " to ". $user_email;
             array_push($arr, $tempString);
         }
         
@@ -255,14 +243,15 @@ if(isset($_POST['create_comment'])){
             $increase_comment_query1 = mysqli_query($connection, $bug_comment_count_query1);
             if(!$increase_comment_query1){
                 die('QUERY FAILED' . mysqli_error($connection));
-            }
-            //redirect("/BugReport/admin/bug.php?b_id={$the_bug_id}");
+            }       
+            redirect("/BugReport/admin/bug.php?b_id={$the_bug_id}");
 
         }else{
             echo"<script>alert('Fields cannot be empty')</script>";
         }
     }
-?>                
+?>
+               
                 <!-- Comments Form -->
     <div class="well">
         <form role="form" action="" method="post">
@@ -318,20 +307,21 @@ if(isset($_POST['create_comment'])){
                     $user_email = $row[user_email];
                     echo "<option value='{$user_email}'>$user_email</option>";
                 }
-
                 ?>
             </select>         
         </div>
         
       <div class="form-group">
+       
         <label for="status">Priority: </label>   
-        <select name="bug_priority" id="">
+        <select name="bug_priority" id="bugPriority">
          <option value="1">1</option>
          <option value="2">2</option>
          <option value="3">3</option>
-     </select>      
-        </div>    
-        
+         </select>
+
+      </div>
+                
          <div class="form-group">
             <label for="status">Severity: </label>   
             <select class="custom-select custom-select-lg mb-3" name="bug_serverity">
@@ -365,9 +355,22 @@ if(isset($_POST['create_comment'])){
             </select>         
         </div>  
         <div class="form-group">
-          <input class="btn btn-primary" type="submit" name="update_bug" value="Update Bug">
+          <input class="btn btn-primary" type="submit" name="update_bug" value="Update Bug" >
         </div>
+   
         </form>
+        <!-- Dynamic Priority Option -->
+        <script>
+            var priorityLen = document.getElementById("bugPriority").options.length;
+            var num = <?php echo json_encode($bug_pre_priority) ?>;
+            for ( var i = 0; i < priorityLen; i++ ) {
+                if(document.getElementById("bugPriority").options[i].text == num){
+                    document.getElementById("bugPriority").options[i].selected = true;
+                   }
+            }
+            
+            
+        </script>  
     </div>       
 </div>
                 <!-- /.row -->
