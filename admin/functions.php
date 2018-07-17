@@ -1,5 +1,24 @@
 <?php
 
+function appendSortBy($query, $source){
+   
+    $str = "ORDER BY ";
+    switch($source){
+        case 'sortByPriority';
+            return $query .=$str . "priority ";
+            break;
+        case 'sortById';
+            return $query .=$str . "bug_id ";
+            break;
+        case 'sortByLastModifiedTime';
+            return $query .=$str . "lastupdate ";
+            break;
+        default:
+            return $query;
+        break;
+    } 
+}
+
 function login_user($username, $password){
     global $connection;
     

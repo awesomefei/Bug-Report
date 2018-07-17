@@ -29,9 +29,6 @@ switch($source){
     case 'edit_bug';
         include "includes/edit_post.php";
         break;
-     case '200';
-        echo 'nice 200';
-        break;
     default:
     include "includes/view_all_bugs.php";
     break;

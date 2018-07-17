@@ -36,10 +36,11 @@
                 <ul class="nav navbar-nav side-nav">
                    <li>
                         <a href="bugs.php?source=add_bug"><i class="fa fa-fw fa-wrench"></i>Compose</a>
-                    </li>
                     
                     <li class="active">
-                        <a href="../admin/assign_to_me.php"><i class="fa fa-fw fa-dashboard"></i>Assign To me</a>
+<!--                       <a href="../admin/assign_to_me.php">-->
+                      <a href="./assign_to_me.php">
+                       <i class="fa fa-fw fa-dashboard"></i>Assign To me</a>
                     </li>
                     
                     <li>
