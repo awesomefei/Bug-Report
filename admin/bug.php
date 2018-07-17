@@ -31,6 +31,7 @@
         $bug_description = $row['description'];
         $bug_comment_count = $row['comment_count'];
         $bug_close_date = date($row['bug_close_date']);
+        $bug_pre_assignee_id = $row['bug_assignee_id'];
         //bug_reporter_id
         $bugReorterQuery="SELECT * FROM users WHERE user_id = '$row[bug_reporter_id]'";
             $select_user = mysqli_query($connection,$bugReorterQuery);
@@ -271,7 +272,7 @@ if(isset($_POST['create_comment'])){
        <form role="form" action="" method="post">
         <div class="form-group">
             <label for="status">Status: </label>
-            <select class="custom-select custom-select-lg mb-3" name="bug_status">
+            <select class="custom-select custom-select-lg mb-3" name="bug_status" id="bugStatus">
                <?php
 
                 $query = "SELECT COLUMN_TYPE FROM information_schema.COLUMNS WHERE TABLE_NAME = 'bug' AND COLUMN_NAME = 'status'";
@@ -288,7 +289,7 @@ if(isset($_POST['create_comment'])){
         </div>  
         
         <div class="form-group">
-            <label for="status">ETS: 
+            <label for="ETS">ETS: 
             <?php
                 echo $bug_close_date;
             ?>
@@ -324,7 +325,7 @@ if(isset($_POST['create_comment'])){
                 
          <div class="form-group">
             <label for="status">Severity: </label>   
-            <select class="custom-select custom-select-lg mb-3" name="bug_serverity">
+            <select class="custom-select custom-select-lg mb-3" name="bug_serverity" id="bugServerity">
                <?php
 
                 $query = "SELECT COLUMN_TYPE FROM information_schema.COLUMNS WHERE TABLE_NAME = 'bug' AND COLUMN_NAME = 'bug_severity'";
@@ -359,13 +360,32 @@ if(isset($_POST['create_comment'])){
         </div>
    
         </form>
-        <!-- Dynamic Priority Option -->
+        <!-- Dynamic Options -->
         <script>
+            //Dynamic Priority Option
             var priorityLen = document.getElementById("bugPriority").options.length;
-            var num = <?php echo json_encode($bug_pre_priority) ?>;
+            var str = <?php echo json_encode($bug_pre_priority) ?>;
             for ( var i = 0; i < priorityLen; i++ ) {
-                if(document.getElementById("bugPriority").options[i].text == num){
+                if(document.getElementById("bugPriority").options[i].text == str){
                     document.getElementById("bugPriority").options[i].selected = true;
+                   }
+            }
+            //Dynamic Status Option
+            var statusLen = document.getElementById("bugStatus").options.length;
+            var str = <?php echo json_encode($bug_pre_status) ?>;
+            console.log(str);
+            for ( var i = 0; i < statusLen; i++ ) {
+                console.log(document.getElementById("bugStatus").options[i].text);
+                if(document.getElementById("bugStatus").options[i].text == str){
+                    document.getElementById("bugStatus").options[i].selected = true;
+                   }
+            }
+            //Dynamic Serverity Option
+            var serverityLen = document.getElementById("bugServerity").options.length;
+            var str = <?php echo json_encode($bug_pre_severity) ?>;
+            for ( var i = 0; i < serverityLen; i++ ) {
+                if(document.getElementById("bugServerity").options[i].text == str){
+                    document.getElementById("bugServerity").options[i].selected = true;
                    }
             }
             
