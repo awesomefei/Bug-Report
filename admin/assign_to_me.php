@@ -39,8 +39,25 @@ $select_targetUserId = mysqli_query($connection,$targetUserInfo);
 while($row = mysqli_fetch_assoc($select_targetUserId)){
     $targetUserId = $row['user_id'];
 }
-$query = "SELECT * FROM bug WHERE bug_assignee_id = $targetUserId ORDER BY bug_id DESC ";
-
+//pagination
+$dispay_per_page = 9;
+if(isset($_GET['page'])){
+    $page = $_GET['page'];
+}else{
+    $page = '';
+}
+if($page == '' ||$page == 1){
+    $page1 = 0;
+}else{
+    $page1 = ($page * $dispay_per_page) - $dispay_per_page;
+}
+$bug_count = "SELECT * FROM bug WHERE bug_assignee_id = $targetUserId ";
+$find_count = mysqli_query($connection,$bug_count);
+$count = mysqli_num_rows($find_count);
+$count = ceil($count/$dispay_per_page);
+//query all bus assigned to login suser       
+$query = "SELECT * FROM bug WHERE bug_assignee_id = $targetUserId ";
+$query .= "ORDER BY bug_id DESC LIMIT $page1, 9";
 if(isset($_GET['source'])){
     $source = $_GET['source'];
 }else{
@@ -83,6 +100,18 @@ echo "<tr>";
     </div>
     <!-- /.container-fluid -->
 </div>
+<ul class="pager">
+<?php
+for($i = 1; $i <= $count ; $i++){
+    if($i == $page){
+        echo "<li><a class='active_link' href='assign_to_me.php?page={$i}'>{$i}</a></li>";
+    }else{
+            echo "<li><a href='assign_to_me.php?page={$i}'>{$i}</a></li>";
 
+    }
+}
+?>
+   
+</ul>
 <?php include "includes/admin_footer.php" ?>
 
