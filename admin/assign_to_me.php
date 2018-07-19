@@ -40,7 +40,7 @@ while($row = mysqli_fetch_assoc($select_targetUserId)){
     $targetUserId = $row['user_id'];
 }
 //pagination
-$dispay_per_page = 9;
+$dispay_per_page = 10;
 if(isset($_GET['page'])){
     $page = $_GET['page'];
 }else{
@@ -106,7 +106,7 @@ for($i = 1; $i <= $count ; $i++){
     if($i == $page){
         echo "<li><a class='active_link' href='assign_to_me.php?page={$i}'>{$i}</a></li>";
     }else{
-            echo "<li><a href='assign_to_me.php?page={$i}'>{$i}</a></li>";
+        echo "<li><a href='assign_to_me.php?page={$i}'>{$i}</a></li>";
 
     }
 }

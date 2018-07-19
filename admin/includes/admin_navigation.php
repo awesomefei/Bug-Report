@@ -35,12 +35,12 @@
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav side-nav">
                    <li>
-                        <a href="bugs.php?source=add_bug"><i class="fa fa-fw fa-wrench"></i>Compose</a>
+                        <a href="bugs.php?source=add_bug"><i class="fas fa-bug"></i> Compose</a>
                     
                     <li class="active">
 <!--                       <a href="../admin/assign_to_me.php">-->
                       <a href="./assign_to_me.php">
-                       <i class="fa fa-fw fa-dashboard"></i>Assign To me</a>
+                       <i class="fa fa-fw fa-wrench"></i> Assign To me</a>
                     </li>
                     
                     <li>
@@ -59,23 +59,13 @@
                         <a href="../admin/dataAnalysis.php"><i class="fa fa-database" aria-hidden="true"></i>
                          Data Analysis</a>
                     </li>
-                    
-                    <li>
-                        <a href="javascript:;" data-toggle="collapse" data-target="#posts_dropdown1"><i class="fas fa-chevron-down"></i> Posts </a>
-                        <ul id="posts_dropdown1" class="collapse">
-                            <li>
-                                <a href="./posts.php">View All Posts</a>
-                            </li>
-                            <li>
-                                <a href="posts.php?source=add_post">Add Posts</a>
-                            </li>
-                        </ul>
-                    </li>
+
                     <li >
                         <a href="comments.php"><i class="fa fa-fw fa-file"></i> Comments</a>
                     </li>
+                    
                    <li>
-                        <a href="javascript:;" data-toggle="collapse" data-target="#users_dropdown"><i class="fa fa-fw fa-arrows-v"></i> Users<i class="fa fa-fw fa-caret-down"></i></a>
+                        <a href="javascript:;" data-toggle="collapse" data-target="#users_dropdown"><i class="fas fa-user"></i> Users<i class="fa fa-fw fa-caret-down"></i></a>
                         <ul id="users_dropdown" class="collapse">
                             <li>
                                 <a href="./users.php">view all users</a>
@@ -86,7 +76,7 @@
                         </ul>
                     </li>
                     <li>
-                        <a href="./profile.php"><i class="fa fa-fw fa-dashboard"></i> Profile</a>
+                        <a href="./new_profile.php"><i class="fas fa-file-signature"></i> Profile</a>
                     </li>
                 </ul>
             </div>

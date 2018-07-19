@@ -23,11 +23,9 @@ if(isset($_POST['edit_user'])) {
 //
 //    $user_image        = $_FILES['image']['name'];
 //    $user_image_temp   = $_FILES['image']['tmp_name'];
-
     $username           = $_POST['username'];
     $user_email         = $_POST['user_email'];
     $user_password      = $_POST['user_password'];
-
 //    move_uploaded_file($post_image_temp, "../image/$post_image" );
 //
 //
@@ -43,8 +41,6 @@ if(isset($_POST['edit_user'])) {
     confirmQuery($update_user);
     header("Location:users.php");
 }
-
-
 ?>
     <div id="wrapper">
         

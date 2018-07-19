@@ -36,7 +36,7 @@
                 $post_content = $row['post_content'];
 ?>
 <h1 class="page-header">
-Page Heading  search.php  
+Page Heading search.php  
     <small>Secondary Text search.php </small>
     </h1>
 

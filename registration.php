@@ -6,7 +6,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
     $username = trim($_POST['username']);
     $email = trim($_POST['email']);
     $password = trim($_POST['password']);
-    $department = trim($_POST['department']);
+    $component = trim($_POST['component']);
     $level = trim($_POST['level']);
     $firstname = trim($_POST['firstname']);
     $lastname = trim($_POST['lastname']);
@@ -55,7 +55,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
     }
     
     if(empty($error)){
-        register_user($username, $email, $password, $department, $level, $firstname, $lastname, $image) ;
+        register_user($username, $email, $password, $component, $level, $firstname, $lastname, $image) ;
         login_user($username, $password);
        
     }
@@ -88,8 +88,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
                      <div class="form-group">
                         <label for="email" class="col-sm-2 control-label">Email</label>
                            <div class="col-sm-10">
-                            <input type="email" name="email" id="email" class="form-control" placeholder="somebody@example.com"
-                            autocomplete="on" value="<?php echo isset($email) ? $email : '' ?>">
+                            <input type="email" name="email" id="email" class="form-control" placeholder="somebody@example.com" autocomplete="on" value="<?php echo isset($email) ? $email : '' ?>">
                             <p><?php echo isset($error['email']) ? $error['email']: '' ?></p>
                         </div>
                     </div>
@@ -107,14 +106,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
                           <input type="text" name="lastname" id="lastname" class="form-control" placeholder="Your lastname">
                         </div>
                       </div>
-                      
-                      <div class="form-group">
-                        <label for="department" class="col-sm-2 control-label">Department</label>
-                        <div class="col-sm-10">
-                          <input type="text" name="department" id="department" class="form-control" placeholder="Your department">
-                        </div>
-                      </div>
-                      
+                                      
                       <div class="form-group">
                         <label for="level" class="col-sm-2 control-label">Your level</label>
                         <div class="col-sm-10">
@@ -136,7 +128,25 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
                           <p><?php echo isset($error['password']) ? $error['password']: '' ?></p>
                         </div>
                       </div>
-
+                       
+                       
+                      <div class="form-group">
+                        <label for="department" class="col-sm-2 control-label ">Department</label>
+                        <div class="col-sm-10">
+                           <select id="inputState" class="form-control custom-select" name="component">
+                           <option value='title'>Choose one...</option>
+                            <?php
+                            $query = "SELECT * FROM component";
+                            $com_query = mysqli_query($connection,$query);
+                            confirmQuery($com_query);
+                            while($row = mysqli_fetch_assoc($com_query)){
+                                $component_title = $row[component_title];
+                                echo "<option value='{$component_title}'>$component_title</option>";
+                            }
+                            ?>
+                          </select>
+                        </div>
+                      </div>
                    
                         <input type="submit" name="register" id="btn-login" class="btn btn-custom btn-lg btn-block btn-primary" value="Register">
                     </form>

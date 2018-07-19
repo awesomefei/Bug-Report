@@ -100,7 +100,7 @@ function is_email_duplicate($email){
     }
 }
 
-function register_user($username, $email, $password, $department, $level, $firstname, $lastname, $image){
+function register_user($username, $email, $password, $component, $level, $firstname, $lastname, $image){
     global $connection;
        
     $username = mysqli_real_escape_string($connection,$username);
@@ -108,12 +108,19 @@ function register_user($username, $email, $password, $department, $level, $first
     $password = mysqli_real_escape_string($connection,$password);
     
     $password = password_hash($password, PASSWORD_BCRYPT, array('cost' =>12) );
+    //parse $component to $component_id
+    $com_query = "SELECT component_id FROM component WHERE component_title = '$component' LIMIT 1 ";
+    $com_id_query = mysqli_query($connection, $com_query);
+    confirmQuery($com_id_query);
+    while($row = mysqli_fetch_assoc($com_id_query)){
+        $component_id = $row[component_id];
 
-    $query = "INSERT INTO users (username, user_email, user_password, user_department, user_level, user_firstname, user_lastname, user_image) ";
-    $query .= "VALUE('{$username}', '{$email}', '{$password}', '{$department}' , '{$level}', '{$firstname}','{$lastname}','{$image}')";
-    $register_user_query = mysqli_query($connection, $query);
+        $query = "INSERT INTO users (username, user_email, user_password, component_id, user_level, user_firstname, user_lastname, user_image) ";
+        $query .= "VALUE('{$username}', '{$email}', '{$password}', {$component_id} , '{$level}', '{$firstname}','{$lastname}','{$image}')";
+        $register_user_query = mysqli_query($connection, $query);
 
-    confirmQuery($register_user_query);
+        confirmQuery($register_user_query);
+        }
     
 }
 
