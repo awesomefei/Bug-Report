@@ -1,5 +1,11 @@
 <?php
 
+function search_user_by_id($user_id){
+            global $connection;
+            $user_query = "SELECT * FROM users WHERE user_id = $user_id ";
+            return mysqli_query($connection,$user_query);
+}
+
 function appendSortBy($query, $source){
    
     $str = "ORDER BY ";

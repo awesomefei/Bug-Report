@@ -15,6 +15,8 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
     $image_temp   = $_FILES['image']['tmp_name'];
     
     move_uploaded_file($image_temp, "/image/$image" );
+    
+    //dealing with error message
     $error = [
         'username' => '',
         'email' => '',

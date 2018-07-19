@@ -1,32 +1,30 @@
 <?php include "includes/admin_header.php" ?>
 <?php   
-   if(isset($_SESSION['username'])){
-       $username = $_SESSION['username'];
-       $query = "SELECT * FROM users WHERE username = '{$username}' ";
-       $select_user_profile_query = mysqli_query($connection, $query);
-       while($row = mysqli_fetch_array($select_user_profile_query)){
-         $user_id = $row['user_id'];
-         $username = $row['username'];        
-         $user_firstname = $row['user_firstname'];
-         $user_lastname = $row['user_lastname'];
-         $user_email = $row['user_email'];
-         $user_level = $row['user_level'];
-         $user_image = $row['user_image'];
-           //use component id to get component title
-         $user_com_id = $row['component_id'];
-         $com_query = "SELECT component_title FROM component WHERE component_id = $user_com_id ";
-         $user_com_query = mysqli_query($connection, $com_query);
-         confirmQuery($user_com_query);
-         while($user_com_row = mysqli_fetch_array($user_com_query)){
-             $user_com_title = $user_com_row[component_title];
-         }        
-       }
+if(isset($_SESSION['username'])){
+   $username = $_SESSION['username'];
+   $query = "SELECT * FROM users WHERE username = '{$username}' ";
+   $select_user_profile_query = mysqli_query($connection, $query);
+   while($row = mysqli_fetch_array($select_user_profile_query)){
+     $user_id = $row['user_id'];
+     $username = $row['username'];        
+     $user_firstname = $row['user_firstname'];
+     $user_lastname = $row['user_lastname'];
+     $user_email = $row['user_email'];
+     $user_level = $row['user_level'];
+     $user_image = $row['user_image'];
+//use component id to get component title
+     $user_com_id = $row['component_id'];
+     $com_query = "SELECT component_title FROM component WHERE component_id = $user_com_id ";
+     $user_com_query = mysqli_query($connection, $com_query);
+     confirmQuery($user_com_query);
+     while($user_com_row = mysqli_fetch_array($user_com_query)){
+         $user_com_title = $user_com_row[component_title];
+     }        
    }
+}
 ?>
 
 <div id="wrapper">
-        
-        <!-- Navigation -->
 <?php include "includes/admin_navigation.php" ?>        
 <div id="page-wrapper">
     <div class="container-fluid">

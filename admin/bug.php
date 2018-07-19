@@ -7,9 +7,9 @@
         <div class="row">
 <!-- Display the exact bug -->
 <?php
-    $targetUseremail;
-    $targetFirstname;
-    $targetLastname;
+    $reporter_email;
+    $reporter_firstname;
+    $reporter_lastname;
     $bug_comment_count;
     $bug_close_date;
     $bug_pre_status;
@@ -29,19 +29,18 @@
         $bug_comment_count = $row['comment_count'];
         $bug_close_date = date($row['bug_close_date']);
         $bug_pre_assignee_id = $row['bug_assignee_id'];
+        $bug_reporter_id = $row['bug_reporter_id'];
         
-        //bug_reporter_id
-        $bugReorterQuery="SELECT * FROM users WHERE user_id = '$row[bug_reporter_id]'";
-        $select_user = mysqli_query($connection,$bugReorterQuery);
-        while($row1 = mysqli_fetch_assoc($select_user)){
-             $targetUseremail = $row1['user_email'];
-             $targetFirstname = $row1['user_firstname'];
-             $targetLastname = $row1['user_lastname'];
+        //get bug_reporter info by bug_reporter_id
+        $selected_reporter = search_user_by_id($bug_reporter_id);
+        while($row1 = mysqli_fetch_assoc($selected_reporter)){
+             $reporter_email = $row1['user_email'];
+             $reporter_firstname = $row1['user_firstname'];
+             $reporter_lastname = $row1['user_lastname'];
         }
-        //bug_assignee_id
-        $bugAssigneeQuery="SELECT * FROM users WHERE user_id = $bug_pre_assignee_id";
-        $select_assignee = mysqli_query($connection,$bugAssigneeQuery);
-        while($row1 = mysqli_fetch_assoc($select_assignee)){
+        //get bug_assignee info by bug_assignee_id
+        $selected_assignee = search_user_by_id($bug_pre_assignee_id);
+        while($row1 = mysqli_fetch_assoc($selected_assignee)){
             $assignee_email = $row1['user_email'];
         }
         
@@ -76,7 +75,7 @@
             <div class="media col-lg-10">
               <img class="align-self-start mr-3" src="../image/profile.jpg" alt="Generic placeholder image" style="width:50px;height:50px;">
               <div class="media-body">
-                <h5 class="mt-0"><?php echo "Author: " . $targetFirstname . " " . $targetLastname; ?></h5>
+                <h5 class="mt-0"><?php echo "Author: " . $reporter_firstname . " " . $reporter_lastname; ?></h5>
               </div>
             </div>
             <div class="col-lg-2">
