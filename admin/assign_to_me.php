@@ -1,5 +1,5 @@
 <?php include "includes/admin_header.php" ?>
-<?php include "includes/bug.php" ?>
+<?php include "includes/bug_class.php" ?>
 <div id="wrapper">
         <!-- Navigation -->
 <?php include "includes/admin_navigation.php" ?>        
@@ -33,11 +33,11 @@
                         <tbody>
 
                                 <?php
-                                $targetUserInfo = "SELECT user_id FROM users WHERE username = '$_SESSION[username]'";
+                                $target_user_query = "SELECT user_id FROM users WHERE username = '$_SESSION[username]'";
 
-                                $select_targetUserId = mysqli_query($connection,$targetUserInfo);
-                                while($row = mysqli_fetch_assoc($select_targetUserId)){
-                                    $targetUserId = $row['user_id'];
+                                $select_target_user_id = mysqli_query($connection,$target_user_query);
+                                while($row = mysqli_fetch_assoc($select_target_user_id)){
+                                    $target_user_id = $row['user_id'];
                                 }
                                 //pagination
                                 $dispay_per_page = 10;
@@ -53,9 +53,9 @@
 
                                 }
 
-                                $total_page_count = get_total_page_count($targetUserId);
+                                $total_page_count = get_total_page_count($target_user_id);
                                 //query all bugs assigned to login suser
-                                $query = "SELECT * FROM bug WHERE bug_assignee_id = $targetUserId ";
+                                $query = "SELECT * FROM bug WHERE bug_assignee_id = $target_user_id ";
 
                                 if(isset($_GET['source'])){
                                     $source = $_GET['source'];
@@ -67,7 +67,6 @@
 
                                 $select_bugs = mysqli_query($connection,$query);
                                
-                                  
                             while($row = mysqli_fetch_assoc($select_bugs)){
                                 $currentBug = new Bug($row);
                                 //get reporter info by reporter id
@@ -92,14 +91,14 @@
         <!-- /.row -->
         </div>
     <!-- /.container-fluid -->
-    <div class="justify-content-center">
-      <ul class="pagination justify-content-center">
+    <div class="">
+      <ul class="pagination">
         <?php
-        for($i = 1; $i <= $total_page_count ; $i++){
-            if($i == $page_num){
-                echo "<li class='page-item active'><a class='page-link' href='assign_to_me.php?page={$i}'>{$i}</a></li>";
+        for($current_page = 1; $current_page <= $total_page_count ; $current_page++){
+            if($current_page == $page_num){
+                echo "<li class='page-item active'><a class='page-link' href='assign_to_me.php?page={$current_page}'>{$current_page}</a></li>";
             }else{
-                echo "<li><a href='assign_to_me.php?page={$i}'>{$i}</a></li>";
+                echo "<li><a href='assign_to_me.php?page={$current_page}'>{$current_page}</a></li>";
 
             }
         }
