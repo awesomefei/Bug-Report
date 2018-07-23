@@ -4,19 +4,9 @@
 <?php include "../admin/includes/admin_navigation.php" ?>        
     <div id="page-wrapper">
         <div class="container-fluid">
-        <div class="row">
+            <div class="row">
 <!-- Display the exact bug -->
 <?php
-    $reporter_email;
-    $reporter_firstname;
-    $reporter_lastname;
-    $bug_comment_count;
-    $bug_close_date;
-    $bug_pre_status;
-    $bug_pre_priority;
-    $bug_pre_severity;
-    $bug_pre_assignee_id;
-    $assignee_email;
     if(isset($_GET['b_id'])){
         $the_bug_id = $_GET['b_id'];
     }
@@ -28,26 +18,25 @@
         $bug_description = $row['description'];
         $bug_comment_count = $row['comment_count'];
         $bug_close_date = date($row['bug_close_date']);
-        $bug_pre_assignee_id = $row['bug_assignee_id'];
-        $bug_reporter_id = $row['bug_reporter_id'];
-        
-        //get bug_reporter info by bug_reporter_id
-        $selected_reporter = search_user_by_id($bug_reporter_id);
-        while($row1 = mysqli_fetch_assoc($selected_reporter)){
-             $reporter_email = $row1['user_email'];
-             $reporter_firstname = $row1['user_firstname'];
-             $reporter_lastname = $row1['user_lastname'];
-        }
-        //get bug_assignee info by bug_assignee_id
-        $selected_assignee = search_user_by_id($bug_pre_assignee_id);
-        while($row1 = mysqli_fetch_assoc($selected_assignee)){
-            $assignee_email = $row1['user_email'];
-        }
-        
         $bug_pre_status = $row['status'];
         $bug_open_date = $row['bug_open_date'];
         $bug_pre_priority = $row['priority'];
         $bug_pre_severity = $row['bug_severity'];
+        
+        $bug_pre_assignee_id = $row['bug_assignee_id'];
+        $bug_reporter_id = $row['bug_reporter_id'];
+        //get bug_reporter info by bug_reporter_id
+        $selected_reporter = search_user_by_id($bug_reporter_id);
+        while($selected_reporter_row = mysqli_fetch_assoc($selected_reporter)){
+             $reporter_email = $selected_reporter_row['user_email'];
+             $reporter_firstname = $selected_reporter_row['user_firstname'];
+             $reporter_lastname = $selected_reporter_row['user_lastname'];
+        }
+        //get bug_assignee info by bug_assignee_id
+        $selected_assignee = search_user_by_id($bug_pre_assignee_id);
+        while($selected_assignee_row = mysqli_fetch_assoc($selected_assignee)){
+            $assignee_email = $selected_assignee_row['user_email'];
+        }
 ?>
                 <!-- Bug Table -->
         <div class="col-lg-2">
@@ -102,21 +91,18 @@ $query = "SELECT * FROM comment WHERE bug_id = {$the_bug_id} ";
 $query .= "ORDER BY comment_id DESC ";
                 
 $selct_comment_query = mysqli_query($connection, $query);
-if(!$selct_comment_query){
-    die("message is" .mysqli_error($connection));
-}                
+              
 while($row = mysqli_fetch_array($selct_comment_query)){
     $comment_date = $row['comment_date'];
     $comment_content = $row['comment_content'];
     $comment_author_id = $row['user_id'];
-    $userQuery = "SELECT * FROM users WHERE user_id = {$comment_author_id} ";
-    $selct_user_query = mysqli_query($connection, $userQuery);
-    while($row1 = mysqli_fetch_array($selct_user_query)){
-        $selct_user_firstname = $row1['user_firstname'];
-        $selct_user_lastname = $row1['user_lastname'];
-
-        $selct_user_email = $row1['user_email'];
-        $selct_user_Image = $row1['user_image'];
+    //get comment author info by user id
+    $selcted_user_query = search_user_by_id($comment_author_id);
+    while($selcted_user_row = mysqli_fetch_array($selcted_user_query)){
+        $selct_user_firstname = $selcted_user_row['user_firstname'];
+        $selct_user_lastname = $selcted_user_row['user_lastname'];
+        $selct_user_email = $selcted_user_row['user_email'];
+        $selct_user_Image = $selcted_user_row['user_image'];
 
 ?>
 
@@ -152,24 +138,11 @@ while($row = mysqli_fetch_array($selct_comment_query)){
 <?php
 if(isset($_POST['create_comment'])){
     $the_bug_id = $_GET['b_id'];
-    $comment_author = $_SESSION['firstname'];
     $comment_content = $_POST['comment_content'];
     if(!empty($comment_content)){
-        
-        $query = "INSERT INTO comment (bug_id, user_id, comment_content, comment_date) ";
-    
-        $query .= "VALUES ($the_bug_id , '$_SESSION[user_id]', '{$comment_content}', now())";
-        $create_comment_query = mysqli_query($connection, $query);
-        if(!$create_comment_query){
-            die('QUERY FAILED' . mysqli_error($connection));
-        }
-    $bug_comment_count_query = "UPDATE bug SET comment_count = $bug_comment_count+1 WHERE bug_id = $the_bug_id LIMIT 1 ";
-    $increase_comment_query = mysqli_query($connection, $bug_comment_count_query);
-    if(!$increase_comment_query){
-        die('QUERY FAILED' . mysqli_error($connection));
-    }
-    redirect("/BugReport/admin/bug.php?b_id={$the_bug_id}");
-        
+       create_comment($auto_comment_content, $the_bug_id,$_SESSION[user_id]);
+        increase_comment_query($bug_comment_count,$the_bug_id);    
+        redirect("/BugReport/admin/bug.php?b_id={$the_bug_id}");
     }else{
         echo"<script>alert('Bug Comment Fields cannot be empty')</script>";
     }
@@ -182,25 +155,14 @@ if(isset($_POST['update_bug'])){
     $bug_new_priority = $_POST['bug_priority'];        
     $bug_new_severity = $_POST['bug_serverity'];
     $user_email = $_POST['user_email'];
-//get bug_assignee_id    
-    $query1 = "SELECT user_id FROM users WHERE user_email = '{$user_email}'";
-    $query_user_id = mysqli_query($connection,$query1);
+    
+//get bug_assignee_id by user_email   
+    $bug_assignee_id_query = "SELECT user_id FROM users WHERE user_email = '{$user_email}'";
+    $query_user_id = mysqli_query($connection,$bug_assignee_id_query);
     while($row = mysqli_fetch_assoc($query_user_id)) {
         $bug_assignee_id = $row['user_id'];   
     }
-
-    $query = "UPDATE bug SET ";
-    $query .="status = '{$bug_new_status}', ";
-    $query .="priority = '{$bug_new_priority}', ";
-    $query .="bug_severity = '{$bug_new_severity}', ";
-    //$query .="lastupdate = now(), ";
-    $query .="bug_assignee_id = '{$bug_assignee_id}' ";
-    $query .= "WHERE bug_id = {$the_bug_id} ";
-    $update_bug = mysqli_query($connection,$query);
-    confirmQuery($update_bug);
-    redirect("/BugReport/admin/bug.php?b_id={$the_bug_id}");
-
-//create comment automatically
+    
     $comment_content =$_SESSION['email'] . " changed ";
     $auto_comment_content = "";
 
@@ -221,33 +183,31 @@ if(isset($_POST['update_bug'])){
         array_push($arr, $tempString);
     }
 
-    $comQuery = "INSERT INTO comment (bug_id, user_id, comment_content, comment_date) ";
-    $comQuery .= "VALUES ($the_bug_id , '$_SESSION[user_id]', '{$comment_content}', now())";  
-
-    for($i = 0; $i < count($arr); $i++){
+    for($i = 0; $i < count($arr); $i++){        
         $auto_comment_content = $auto_comment_content . $arr[$i] . "\n"; 
     }
-
-    if(!empty($auto_comment_content)){
-
-        $query = "INSERT INTO comment (bug_id, user_id, comment_content, comment_date) ";
-
-        $query .= "VALUES ($the_bug_id , '$_SESSION[user_id]', '{$auto_comment_content}', now())";
-        $create_comment_query = mysqli_query($connection, $query);
-        if(!$create_comment_query){
-            die('QUERY FAILED' . mysqli_error($connection));
-        }
-        $bug_comment_count_query1 = "UPDATE bug SET comment_count = $bug_comment_count+1 WHERE bug_id = $the_bug_id LIMIT 1 ";
-        $increase_comment_query1 = mysqli_query($connection, $bug_comment_count_query1);
-        if(!$increase_comment_query1){
-            die('QUERY FAILED' . mysqli_error($connection));
-        }       
+    
+    if($auto_comment_content == ''){
+            echo"<script>alert('Fields cannot be empty')</script>";
+    }else{
+        $query = "UPDATE bug SET ";
+        $query .="status = '{$bug_new_status}', ";
+        $query .="priority = '{$bug_new_priority}', ";
+        $query .="bug_severity = '{$bug_new_severity}', ";
+        $query .="lastupdate = now(), ";
+        $query .="bug_assignee_id = '{$bug_assignee_id}' ";
+        $query .= "WHERE bug_id = {$the_bug_id} ";
+        $update_bug = mysqli_query($connection,$query);
+        confirmQuery($update_bug);
         redirect("/BugReport/admin/bug.php?b_id={$the_bug_id}");
+    }
 
-    }
-    else{
-        echo"<script>alert('Fields cannot be empty')</script>";
-    }
+//create comment automatically
+    if(!empty($auto_comment_content)){
+        create_comment($auto_comment_content, $the_bug_id,$_SESSION[user_id]);
+        increase_comment_query($bug_comment_count,$the_bug_id);    
+        redirect("/BugReport/admin/bug.php?b_id={$the_bug_id}");
+    }   
 }
 ?>
                
@@ -272,12 +232,7 @@ if(isset($_POST['update_bug'])){
             <label for="status">Status: </label>
             <select class="custom-select custom-select-lg mb-3" name="bug_status" id="bugStatus">
                <?php
-
-                $query = "SELECT COLUMN_TYPE FROM information_schema.COLUMNS WHERE TABLE_NAME = 'bug' AND COLUMN_NAME = 'status'";
-                $bug_type_query = mysqli_query($connection,$query);
-                confirmQuery($bug_type_query);
-                $row = mysqli_fetch_assoc($bug_type_query);
-                $enumList = explode(",", str_replace("'", "", substr($row['COLUMN_TYPE'], 5, (strlen($row['COLUMN_TYPE'])-6))));
+                $enumList = iterate_enum_in_table('bug', 'status');
                  foreach($enumList as $value)
                     echo "<option value='{$value}'>$value</option>";
 
@@ -326,14 +281,9 @@ if(isset($_POST['update_bug'])){
             <select class="custom-select custom-select-lg mb-3" name="bug_serverity" id="bugServerity">
                <?php
 
-                $query = "SELECT COLUMN_TYPE FROM information_schema.COLUMNS WHERE TABLE_NAME = 'bug' AND COLUMN_NAME = 'bug_severity'";
-                $bug_type_query = mysqli_query($connection,$query);
-                confirmQuery($bug_type_query);
-                $row = mysqli_fetch_assoc($bug_type_query);
-                $enumList = explode(",", str_replace("'", "", substr($row['COLUMN_TYPE'], 5, (strlen($row['COLUMN_TYPE'])-6))));
+                $enumList = iterate_enum_in_table('bug', 'bug_severity');
                  foreach($enumList as $value)
                     echo "<option value='{$value}'>$value</option>";
-
                 ?>
             </select>         
         </div>  
@@ -361,7 +311,7 @@ if(isset($_POST['update_bug'])){
         <!-- Dynamic Options -->
         <script>
             //Dynamic Priority Option
-            var priorityLen = document.getElementById("bugPriority").options.length;
+             var priorityLen = document.getElementById("bugPriority").options.length;
             var str = <?php echo json_encode($bug_pre_priority) ?>;
             for ( var i = 0; i < priorityLen; i++ ) {
                 if(document.getElementById("bugPriority").options[i].text == str){
@@ -383,9 +333,7 @@ if(isset($_POST['update_bug'])){
                 if(document.getElementById("bugServerity").options[i].text == str){
                     document.getElementById("bugServerity").options[i].selected = true;
                    }
-            }
-            
-            
+            }           
         </script>  
     </div>       
 </div>

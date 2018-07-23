@@ -1,9 +1,49 @@
 <?php
 
+function get_total_page_count($target_user_id){
+    global $connection;
+    $dispay_per_page = 10;
+    $bug_total_count = "SELECT * FROM bug WHERE bug_assignee_id = $target_user_id ";
+    $find_count = mysqli_query($connection,$bug_total_count);
+    $count = mysqli_num_rows($find_count);
+    return ceil($count/$dispay_per_page);
+}
+
+
+function iterate_enum_in_table($table_name, $column_name){
+    global $connection; 
+    $query = "SELECT COLUMN_TYPE FROM information_schema.COLUMNS WHERE TABLE_NAME = '$table_name' AND COLUMN_NAME = '$column_name' ";
+    $bug_type_query = mysqli_query($connection,$query);
+    confirmQuery($bug_type_query);
+    $row = mysqli_fetch_assoc($bug_type_query);
+    return explode(",", str_replace("'", "", substr($row['COLUMN_TYPE'], 5, (strlen($row['COLUMN_TYPE'])-6))));
+}
+
+function increase_comment_query($bug_comment_count, $bug_id){
+    global $connection;
+    $query = $bug_comment_count_query1 = "UPDATE bug SET comment_count = $bug_comment_count+1 WHERE bug_id = $bug_id LIMIT 1 ";
+    $increase_bug_comment_query = mysqli_query($connection, $query);
+    confirmQuery($increase_bug_comment_query);     
+}
+
+function create_comment($comment_content, $bug_id, $user_id){
+     global $connection;
+    if(!empty($comment_content)){
+        
+        $query = "INSERT INTO comment (bug_id, user_id, comment_content, comment_date) ";
+    
+        $query .= "VALUES ($bug_id , $user_id, '{$comment_content}', now())";
+        $create_comment_query = mysqli_query($connection, $query);
+        confirmQuery($create_comment_query);
+    }
+}
+
 function search_user_by_id($user_id){
             global $connection;
-            $user_query = "SELECT * FROM users WHERE user_id = $user_id ";
-            return mysqli_query($connection,$user_query);
+            $user_query = "SELECT * FROM users WHERE user_id = $user_id LIMIT 1";
+            $user_id_query = mysqli_query($connection, $user_query);
+            confirmQuery($user_id_query);
+            return $user_id_query;
 }
 
 function appendSortBy($query, $source){

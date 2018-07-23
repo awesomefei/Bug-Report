@@ -9,15 +9,12 @@
             <div class="container-fluid">
 
                 <!-- Page Heading -->
-                
-
-</div>
-           
-           
             </div>
+           
+        </div>
             <!-- /.container-fluid -->
 
-        </div>
+    </div>
         <!-- /#page-wrapper -->
 
 <?php include "includes/admin_footer.php" ?>
