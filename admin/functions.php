@@ -60,7 +60,7 @@ function appendSortBy($query, $source){
             return $query .=$str . "lastupdate ";
             break;
         default:
-            return $query;
+            return $query .=$str . "bug_id DESC ";
         break;
     } 
 }

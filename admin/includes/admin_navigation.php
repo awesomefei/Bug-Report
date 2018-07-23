@@ -44,6 +44,18 @@
                     </li>
                     
                     <li>
+                        <a href="javascript:;" data-toggle="collapse" data-target="#coms_dropdown"><i class="fas fa-chevron-down"></i></i>   Other </a>
+                        <ul id="coms_dropdown" class="collapse">
+                            <li>
+                                <a href="./components.php">Reported By Me</a>
+                            </li>
+                            <li>
+                                <a href="components.php?source=add_com">To be Continued...</a>
+                            </li>
+                        </ul>
+                    </li>
+                    
+                    <li>
                         <a href="javascript:;" data-toggle="collapse" data-target="#coms_dropdown"><i class="fas fa-chevron-down"></i></i>   Components </a>
                         <ul id="coms_dropdown" class="collapse">
                             <li>
