@@ -1,5 +1,16 @@
 <?php
 
+function display_page($total_page_count,$page_num){
+    for($current_page = 1; $current_page <= $total_page_count ; $current_page++){
+            if($current_page == $page_num){
+                echo "<li class='page-item active'><a class='page-link' href='assign_to_me.php?page={$current_page}'>{$current_page}</a></li>";
+            }else{
+                echo "<li><a href='assign_to_me.php?page={$current_page}'>{$current_page}</a></li>";
+
+            }
+        }
+}
+
 function get_total_page_count($target_user_id){
     global $connection;
     $dispay_per_page = 10;
@@ -27,7 +38,7 @@ function increase_comment_query($bug_comment_count, $bug_id){
 }
 
 function create_comment($comment_content, $bug_id, $user_id){
-     global $connection;
+    global $connection;
     if(!empty($comment_content)){
         
         $query = "INSERT INTO comment (bug_id, user_id, comment_content, comment_date) ";
@@ -44,6 +55,16 @@ function search_user_by_id($user_id){
             $user_id_query = mysqli_query($connection, $user_query);
             confirmQuery($user_id_query);
             return $user_id_query;
+}
+
+function get_user_id_by_username($username){
+    global $connection;
+    $target_user_query = "SELECT user_id FROM users WHERE username = '$username' LIMIT 1 ";
+    $user_id = mysqli_query($connection,$target_user_query);
+    while($row = mysqli_fetch_assoc($user_id)){
+        $target_user_id = $row['user_id'];
+    }
+    return $target_user_id;
 }
 
 function appendSortBy($query, $source){

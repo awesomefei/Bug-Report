@@ -44,10 +44,10 @@
                     </li>
                     
                     <li>
-                        <a href="javascript:;" data-toggle="collapse" data-target="#coms_dropdown"><i class="fas fa-chevron-down"></i></i>   Other </a>
-                        <ul id="coms_dropdown" class="collapse">
+                        <a href="javascript:;" data-toggle="collapse" data-target="#other_dropdown"><i class="fas fa-chevron-down"></i></i>   Other </a>
+                        <ul id="other_dropdown" class="collapse">
                             <li>
-                                <a href="./components.php">Reported By Me</a>
+                                <a href="./reported_by_me.php">Reported By Me</a>
                             </li>
                             <li>
                                 <a href="components.php?source=add_com">To be Continued...</a>

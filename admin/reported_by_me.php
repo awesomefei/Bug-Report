@@ -17,6 +17,7 @@
                         }
                         ?>
                     </small>
+                    <p>These are reported by me</p>
                     </h1>
                     <table class="table table-bordered table-hover">
                         <thead>
@@ -33,6 +34,8 @@
                         <tbody>
 
                                 <?php
+                            
+                                //pagination
                                 $dispay_per_page = 10;
                                 if(isset($_GET['page'])){
                                     $page_num = $_GET['page'];
@@ -47,8 +50,8 @@
                                 }
 
                                 $total_page_count = get_total_page_count($_SESSION['user_id']);
-                                //query all bugs assigned to login suser
-                                $query = "SELECT * FROM bug WHERE bug_assignee_id = $_SESSION[user_id] ";
+                                //query all bugs reported by login user
+                                $query = "SELECT * FROM bug WHERE bug_reporter_id = $_SESSION[user_id] ";
 
                                 if(isset($_GET['source'])){
                                     $source = $_GET['source'];
@@ -62,16 +65,16 @@
                                
                             while($row = mysqli_fetch_assoc($bugs)){
                                 $currentBug = new Bug($row);
-                                //get reporter info by reporter id
-                                 $user = search_user_by_id($currentBug->reporter_id); 
-                                 $reporter_email = mysqli_fetch_assoc($user)['user_email'];
+                                //get assignee info by reporter id
+                                 $earch_user_by_id_result = search_user_by_id($currentBug->assignee_id); 
+                                 $assignee_email = mysqli_fetch_assoc($earch_user_by_id_result)['user_email'];
                                 
                                 echo "<tr>";
                                 echo "<td> $currentBug->id</td>";
                                 echo "<td> $currentBug->priority</td>";
                                 echo "<td><a href='bug.php?b_id={$currentBug->id}'>$currentBug->title</a></td>";
-                                echo "<td> $reporter_email</td>";
-                                echo "<td>$_SESSION[email]</td>";
+                                echo "<td> $_SESSION[email]</td>";
+                                echo "<td>$assignee_email</td>";
                                 echo "<td>$currentBug->status</td>";
                                 echo "<td>$currentBug->lastupdate</td>";
                                 echo "<tr>";             
@@ -86,7 +89,7 @@
     <!-- /.container-fluid -->
     <div class="">
       <ul class="pagination">
-    <?php
+        <?php
         display_page($total_page_count,$page_num);
     ?>
       </ul>
