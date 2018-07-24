@@ -33,7 +33,9 @@
                         <tbody>
 
                                 <?php
-                                $dispay_per_page = 10;
+                            //pageination;
+                                $dispay_per_page = 10;    
+
                                 if(isset($_GET['page'])){
                                     $page_num = $_GET['page'];
                                 }else{
@@ -42,7 +44,7 @@
                                 if($page_num == '' ||$page_num == 1){
                                     $each_page_display_num = 0;
                                 }else{
-                                    $each_page_display_num = ($page_num * $dispay_per_page) - $dispay_per_page;
+                                    $each_page_display_num = get_each_page_display_num($dispay_per_page, $page_num);
 
                                 }
 

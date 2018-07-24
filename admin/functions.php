@@ -1,12 +1,15 @@
 <?php
 
+function get_each_page_display_num($dispay_per_page, $page_num){
+    return ($page_num * $dispay_per_page) - $dispay_per_page;
+}
+
 function display_page($total_page_count,$page_num){
     for($current_page = 1; $current_page <= $total_page_count ; $current_page++){
             if($current_page == $page_num){
                 echo "<li class='page-item active'><a class='page-link' href='assign_to_me.php?page={$current_page}'>{$current_page}</a></li>";
             }else{
                 echo "<li><a href='assign_to_me.php?page={$current_page}'>{$current_page}</a></li>";
-
             }
         }
 }
