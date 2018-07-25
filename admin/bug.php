@@ -1,5 +1,7 @@
 <?php include "includes/admin_header.php" ?>
 <?php include "includes/bug_class.php" ?>
+<?php include "includes/user.php" ?>
+
 
 <div id="wrapper">
     <!-- Navigation -->
@@ -26,14 +28,12 @@
         //get bug_reporter info by bug_reporter_id
         $selected_reporter = search_user_by_id($current_bug->reporter_id);
         while($selected_reporter_row = mysqli_fetch_assoc($selected_reporter)){
-             $reporter_email = $selected_reporter_row['user_email'];
-             $reporter_firstname = $selected_reporter_row['user_firstname'];
-             $reporter_lastname = $selected_reporter_row['user_lastname'];
+             $reporter = new User($selected_reporter_row);
         }
         //get bug_assignee info by bug_assignee_id
         $selected_assignee = search_user_by_id($bug_pre_assignee_id);
-        $selected_assignee_row = mysqli_fetch_assoc($selected_assignee);
-        $assignee_email = $selected_assignee_row['user_email'];
+        $assignee_row = mysqli_fetch_assoc($selected_assignee);
+        $assignee_email = $assignee_row['user_email'];
 ?>
                 <!-- Bug Table -->
         <div class="col-lg-2">
@@ -61,7 +61,7 @@
             <div class="media col-lg-10">
               <img class="align-self-start mr-3" src="../image/profile.jpg" alt="Generic placeholder image" style="width:50px;height:50px;">
               <div class="media-body">
-                <h5 class="mt-0"><?php echo "Author: " . $reporter_firstname . " " . $reporter_lastname; ?></h5>
+                <h5 class="mt-0"><?php echo "Author: " . $reporter->firstname . " " . $reporter->lastname; ?></h5>
               </div>
             </div>
             <div class="col-lg-2">
@@ -96,10 +96,7 @@ while($row = mysqli_fetch_array($selct_comment_query)){
     //get comment author info by user id
     $selcted_user_query = search_user_by_id($comment_author_id);
     while($selcted_user_row = mysqli_fetch_array($selcted_user_query)){
-        $selct_user_firstname = $selcted_user_row['user_firstname'];
-        $selct_user_lastname = $selcted_user_row['user_lastname'];
-        $selct_user_email = $selcted_user_row['user_email'];
-        $selct_user_Image = $selcted_user_row['user_image'];
+        $user = new User($selcted_user_row);
 
 ?>
 
@@ -107,10 +104,10 @@ while($row = mysqli_fetch_array($selct_comment_query)){
  <div class="row">
         <div class="media col-lg-10">
           <img class="align-self-start mr-3" src="../image/<?php
-        echo $selct_user_Image
+        echo $user->image
         ?>" alt="Generic placeholder image" style="width:50px;height:50px;">
           <div class="media-body">
-            <h5 class="mt-0"><?php echo $selct_user_firstname . " " . $selct_user_lastname; ?>
+            <h5 class="mt-0"><?php echo $user->firstname . " " . $user->lastname; ?>
             <a href="#">#<?php 
                 echo $bug_comment_count_show++;
                 ?></a>
