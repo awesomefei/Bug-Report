@@ -14,18 +14,25 @@
                    <?php           
     if(isset($_POST["submit"])){
         $search = $_POST['search'];
-        $query = "(SELECT * FROM bug WHERE bug_title LIKE '%$search%') ";
-        //$query .= "(SELECT * FROM tags WHERE tag_name LIKE '%$search%') ";
-        $search_query = mysqli_query($connection, $query);
-        
-        if(!$search_query){
-            die('query failed' . mysqli_error($connection));
+        if($search == ''){
+            die("You searched nothing");
         }
-        $count = mysqli_num_rows($search_query);
-        if($count == 0){
+        $bug_query = "SELECT * FROM bug WHERE bug_title LIKE '%$search%' OR bug_id LIKE '%$search%' ";
+        //die('!!!!!' . $bug_query);
+        //$user_query = "SELECT * FROM users WHERE user_firstname OR user_lastname OR username OR user_email LIKE '%$search%' ";
+        $bug_query = "SELECT * FROM tags WHERE tag_name LIKE '%$search%' ";
+        $search_bug_query = mysqli_query($connection, $bug_query);
+       // $search_user_query = mysqli_query($connection, $user_query);
+        //confirmQuery($search_user_query);
+        confirmQuery($search_bug_query);
+        
+        $bug_count = mysqli_num_rows($search_bug_query);
+        //$user_count = mysqli_num_rows($search_user_query);
+        
+        if($bug_count == 0){
             echo "<h1> no result </h1>";
-        }else{
-            while($row = mysqli_fetch_assoc($search_query)){
+        }else {
+            while($row = mysqli_fetch_assoc($search_bug_query)){
                 $bug = new Bug($row);
 ?>
     <!-- First Blog Post -->
