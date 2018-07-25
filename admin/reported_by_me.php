@@ -63,19 +63,19 @@
                                 $bugs = mysqli_query($connection,$query);
                                
                             while($row = mysqli_fetch_assoc($bugs)){
-                                $currentBug = new Bug($row);
+                                $current_bug = new Bug($row);
                                 //get assignee info by reporter id
-                                 $earch_user_by_id_result = search_user_by_id($currentBug->assignee_id); 
+                                 $earch_user_by_id_result = search_user_by_id($current_bug->assignee_id); 
                                  $assignee_email = mysqli_fetch_assoc($earch_user_by_id_result)['user_email'];
                                 
                                 echo "<tr>";
-                                echo "<td> $currentBug->id</td>";
-                                echo "<td> $currentBug->priority</td>";
-                                echo "<td><a href='bug.php?b_id={$currentBug->id}'>$currentBug->title</a></td>";
+                                echo "<td> $current_bug->id</td>";
+                                echo "<td> $current_bug->priority</td>";
+                                echo "<td><a href='bug.php?b_id={$current_bug->id}'>$current_bug->title</a></td>";
                                 echo "<td> $_SESSION[email]</td>";
                                 echo "<td>$assignee_email</td>";
-                                echo "<td>$currentBug->status</td>";
-                                echo "<td>$currentBug->lastupdate</td>";
+                                echo "<td>$current_bug->status</td>";
+                                echo "<td>$current_bug->lastupdate</td>";
                                 echo "<tr>";             
                             }
                             ?>

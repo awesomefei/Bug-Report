@@ -1,4 +1,6 @@
 <?php include "includes/admin_header.php" ?>
+<?php include "includes/bug_class.php" ?>
+
 <div id="wrapper">
     <!-- Navigation -->
 <?php include "../admin/includes/admin_navigation.php" ?>        
@@ -14,19 +16,15 @@
     $query = "SELECT * FROM bug WHERE bug_id = $the_bug_id LIMIT 1 ";
     $select_bug_query = mysqli_query($connection, $query);
     while($row = mysqli_fetch_assoc($select_bug_query)){
-        $bug_title = $row['bug_title'];
-        $bug_description = $row['description'];
-        $bug_comment_count = $row['comment_count'];
-        $bug_close_date = date($row['bug_close_date']);
-        $bug_pre_status = $row['status'];
-        $bug_open_date = $row['bug_open_date'];
-        $bug_pre_priority = $row['priority'];
-        $bug_pre_severity = $row['bug_severity'];
+        $current_bug = new Bug($row);
+        //for javascript
+        $bug_pre_status = $current_bug->status;
+        $bug_pre_priority = $current_bug->priority;
+        $bug_pre_severity = $current_bug->severity;
+        $bug_pre_assignee_id = $current_bug->assignee_id;
         
-        $bug_pre_assignee_id = $row['bug_assignee_id'];
-        $bug_reporter_id = $row['bug_reporter_id'];
         //get bug_reporter info by bug_reporter_id
-        $selected_reporter = search_user_by_id($bug_reporter_id);
+        $selected_reporter = search_user_by_id($current_bug->reporter_id);
         while($selected_reporter_row = mysqli_fetch_assoc($selected_reporter)){
              $reporter_email = $selected_reporter_row['user_email'];
              $reporter_firstname = $selected_reporter_row['user_firstname'];
@@ -34,9 +32,8 @@
         }
         //get bug_assignee info by bug_assignee_id
         $selected_assignee = search_user_by_id($bug_pre_assignee_id);
-        while($selected_assignee_row = mysqli_fetch_assoc($selected_assignee)){
-            $assignee_email = $selected_assignee_row['user_email'];
-        }
+        $selected_assignee_row = mysqli_fetch_assoc($selected_assignee);
+        $assignee_email = $selected_assignee_row['user_email'];
 ?>
                 <!-- Bug Table -->
         <div class="col-lg-2">
@@ -48,7 +45,7 @@
             <h4 class="page-header">
               Title:
                <?php
-                    echo $bug_title;
+                    echo $current_bug->title;
                 ?>
             </h4>
         </div>
@@ -70,7 +67,7 @@
             <div class="col-lg-2">
              <p><span class="glyphicon glyphicon-time"></span> 
                            <?php
-                                echo $bug_open_date;
+                                $current_bug->open_date;
                             ?>
              </p>
             </div>
@@ -78,7 +75,7 @@
         
         <p><font size="3">
             <?php
-                echo nl2br($bug_description);
+                echo nl2br($current_bug->description);
             ?>
         </font></p>
         <hr>
@@ -157,17 +154,14 @@ if(isset($_POST['update_bug'])){
     $user_email = $_POST['user_email'];
     
 //get bug_assignee_id by user_email   
-    $bug_assignee_id_query = "SELECT user_id FROM users WHERE user_email = '{$user_email}'";
-    $query_user_id = mysqli_query($connection,$bug_assignee_id_query);
-    while($row = mysqli_fetch_assoc($query_user_id)) {
-        $bug_assignee_id = $row['user_id'];   
-    }
+
+    $bug_assignee_id = get_user_id_by_email($user_email);   
     
     $comment_content =$_SESSION['email'] . " changed ";
     $auto_comment_content = "";
 
-    if($bug_pre_status != $bug_new_status){ 
-            $tempString = $comment_content . "status from " . $bug_pre_status . " to ". $bug_new_status;
+    if($current_bug->status != $bug_new_status){ 
+            $tempString = $comment_content . "status from " . $current_bug->status . " to ". $bug_new_status;
             array_push($arr, $tempString);
         }
     if($bug_pre_priority != $bug_new_priority){
@@ -244,19 +238,16 @@ if(isset($_POST['update_bug'])){
         <div class="form-group">
             <label for="ETS">ETS: 
             <?php
-                echo $bug_close_date;
+                echo $current_bug->close_date;
             ?>
             </label>            
         </div>  
         
         <div class="form-group">
             <label for="status">Reassign to: </label>   
-            <select class="custom-select custom-select-lg mb-3" name='user_email'> 
+            <select class="custom-select custom-select-lg mb-3" name='user_email' id="reassign"> 
                <?php
-
-                $query = "SELECT * FROM users";
-                $user_query = mysqli_query($connection,$query);
-                confirmQuery($user_query);
+                $user_query = get_all_users();
                 while($row = mysqli_fetch_assoc($user_query)){
                     $user_email = $row[user_email];
                     echo "<option value='{$user_email}'>$user_email</option>";
@@ -291,14 +282,12 @@ if(isset($_POST['update_bug'])){
             <label for="status">Bloked by: </label>   
             <select class="custom-select custom-select-lg mb-3" name="">
                <?php
-
-                $query = "SELECT * FROM users";
-                $user_query = mysqli_query($connection,$query);
-                confirmQuery($user_query);
-                while($row = mysqli_fetch_assoc($user_query)){
+                $users_query = get_all_users();
+                while($row = mysqli_fetch_assoc($users_query)){
                     $user_email = $row[user_email];
                     echo "<option value='{$user_email}'>$user_email</option>";
                 }
+ 
 
                 ?>
             </select>         
@@ -311,11 +300,20 @@ if(isset($_POST['update_bug'])){
         <!-- Dynamic Options -->
         <script>
             //Dynamic Priority Option
-             var priorityLen = document.getElementById("bugPriority").options.length;
+            var priorityLen = document.getElementById("bugPriority").options.length;
             var str = <?php echo json_encode($bug_pre_priority) ?>;
             for ( var i = 0; i < priorityLen; i++ ) {
                 if(document.getElementById("bugPriority").options[i].text == str){
                     document.getElementById("bugPriority").options[i].selected = true;
+                   }
+            }
+            //reassign
+            var reassignLen = document.getElementById("reassign").options.length;
+            var str = <?php echo json_encode($assignee_email) ?>;
+
+            for ( var i = 0; i < priorityLen; i++ ) {
+                if(document.getElementById("reassign").options[i].text == str){
+                    document.getElementById("reassign").options[i].selected = true;
                    }
             }
             //Dynamic Status Option

@@ -52,17 +52,25 @@ function create_comment($comment_content, $bug_id, $user_id){
     }
 }
 
+function get_all_users(){
+    global $connection;
+    $query = "SELECT * FROM users ";
+    $user_query = mysqli_query($connection,$query);
+    confirmQuery($user_query);
+    return $user_query;
+}
+
 function search_user_by_id($user_id){
             global $connection;
-            $user_query = "SELECT * FROM users WHERE user_id = $user_id LIMIT 1";
+            $user_query = "SELECT * FROM users WHERE user_id = $user_id LIMIT 1 ";
             $user_id_query = mysqli_query($connection, $user_query);
             confirmQuery($user_id_query);
             return $user_id_query;
 }
 
-function get_user_id_by_username($username){
+function get_user_id_by_email($email){
     global $connection;
-    $target_user_query = "SELECT user_id FROM users WHERE username = '$username' LIMIT 1 ";
+    $target_user_query = "SELECT user_id FROM users WHERE username = '$email' LIMIT 1 ";
     $user_id = mysqli_query($connection,$target_user_query);
     while($row = mysqli_fetch_assoc($user_id)){
         $target_user_id = $row['user_id'];
@@ -71,7 +79,6 @@ function get_user_id_by_username($username){
 }
 
 function appendSortBy($query, $source){
-   
     $str = "ORDER BY ";
     switch($source){
         case 'sortByPriority';

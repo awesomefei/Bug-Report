@@ -2,11 +2,15 @@
 class Bug{
     var $id; 
     var $priority;
-    var $bug_title;
+    var $title;
     var $assignee_email;
-    var $bug_status;
-    var $bug_lastupdate;
-    var $reporter_id;
+    var $status;
+    var $lastupdate;
+    var $description;
+    var $open_date;
+    var $close_date;
+    var $severity;
+    var $comment_count;
     
     function __construct($row){
         $this->id = $row['bug_id'];
@@ -16,6 +20,12 @@ class Bug{
         $this->status = $row['status'];
         $this->lastupdate = $row['lastupdate'];
         $this->reporter_id = $row['bug_reporter_id'];
+        $this->description = $row['description'];
+        $this->open_date = $row['bug_open_date'];
+        $this->close_date = $row['bug_close_date'];
+        $this->severity = $row['bug_severity'];
+        $this->comment_count = $row['comment_count'];
+
     }
 }
 
