@@ -1,6 +1,7 @@
 <?php include "includes/admin_header.php" ?>
 <?php include "includes/bug_class.php" ?>
 <?php include "includes/user.php" ?>
+<?php include "includes/comment.php" ?>
 
 
 <div id="wrapper">
@@ -25,12 +26,12 @@
         $bug_pre_severity = $current_bug->severity;
         $bug_pre_assignee_id = $current_bug->assignee_id;
         
-        //get bug_reporter info by bug_reporter_id
-        $selected_reporter = search_user_by_id($current_bug->reporter_id);
-        while($selected_reporter_row = mysqli_fetch_assoc($selected_reporter)){
+        //get bug_reporter info by reporter_id
+        $reporter_query = search_user_by_id($current_bug->reporter_id);
+        while($selected_reporter_row = mysqli_fetch_assoc($reporter_query)){
              $reporter = new User($selected_reporter_row);
         }
-        //get bug_assignee info by bug_assignee_id
+        //get bug_assignee info by assignee_id
         $selected_assignee = search_user_by_id($bug_pre_assignee_id);
         $assignee_row = mysqli_fetch_assoc($selected_assignee);
         $assignee_email = $assignee_row['user_email'];
@@ -87,48 +88,46 @@ $bug_comment_count_show = 1;
 $query = "SELECT * FROM comment WHERE bug_id = {$the_bug_id} ";
 $query .= "ORDER BY comment_id DESC ";
                 
-$selct_comment_query = mysqli_query($connection, $query);
+$comment_query = mysqli_query($connection, $query);
               
-while($row = mysqli_fetch_array($selct_comment_query)){
-    $comment_date = $row['comment_date'];
-    $comment_content = $row['comment_content'];
-    $comment_author_id = $row['user_id'];
+while($row = mysqli_fetch_array($comment_query)){
+    $comment = new Comment($row);
+
     //get comment author info by user id
-    $selcted_user_query = search_user_by_id($comment_author_id);
+    $selcted_user_query = search_user_by_id($comment->user_id);
     while($selcted_user_row = mysqli_fetch_array($selcted_user_query)){
         $user = new User($selcted_user_row);
 
 ?>
-
-   <!-- Comment -->
- <div class="row">
-        <div class="media col-lg-10">
-          <img class="align-self-start mr-3" src="../image/<?php
-        echo $user->image
-        ?>" alt="Generic placeholder image" style="width:50px;height:50px;">
-          <div class="media-body">
-            <h5 class="mt-0"><?php echo $user->firstname . " " . $user->lastname; ?>
-            <a href="#">#<?php 
-                echo $bug_comment_count_show++;
-                ?></a>
-            </h5>
-          </div>
+<!-- Comment -->
+         <div class="row">
+            <div class="media col-lg-10">
+              <img class="align-self-start mr-3" src="../image/<?php
+            echo $user->image
+            ?>" alt="Generic placeholder image" style="width:50px;height:50px;">
+              <div class="media-body">
+                <h5 class="mt-0"><?php echo $user->firstname . " " . $user->lastname; ?>
+                <a href="#">#<?php 
+                    echo $bug_comment_count_show++;
+                    ?></a>
+                </h5>
+              </div>
+            </div>
+            <div class="col-lg-2">
+             <p><span class="glyphicon glyphicon-time"></span> 
+                   <?php
+                        echo $comment->comment_date;
+                    ?>
+             </p>
+            </div>
         </div>
-        <div class="col-lg-2">
-         <p><span class="glyphicon glyphicon-time"></span> 
-               <?php
-                    echo $comment_date;
-                ?>
-         </p>
-        </div>
-    </div>
-    <p font="3"><?php echo nl2br($comment_content) ?></p>
+    <p font="3"><?php echo nl2br($comment->comment_content) ?></p>
      <?php               
     }  
 }
 ?>
 
- <!-- Blog Comments -->
+<!-- Blog Comments -->
 <?php
 if(isset($_POST['create_comment'])){
     $the_bug_id = $_GET['b_id'];
