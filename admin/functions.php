@@ -1,5 +1,7 @@
 <?php
 
+
+
 function get_each_page_display_num($dispay_per_page, $page_num){
     return ($page_num * $dispay_per_page) - $dispay_per_page;
 }

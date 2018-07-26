@@ -1,3 +1,4 @@
+<?php include "includes/tag.php" ?>
 <?php
 
 if(isset($_POST['create_bug'])) {
@@ -31,29 +32,29 @@ if(isset($_POST['create_bug'])) {
    }    
 ?> 
 <form action="" method="post" enctype="multipart/form-data">    
- <div class="form-group">
-     <label for="title">Bug Title</label>
+    <div class="form-group">
+     <label for="title">Bug Title: </label>
       <input type="text" class="form-control" name="bug_title">
-</div>
+    </div>
 
-<div class="form-group">
-     <label for="title">Bug Assignee</label>
-      <input type="text" class="form-control" name="bug_assignee_email">
-</div>
+    <div class="form-group">
+     <label for="title">Bug Assignee: </label>
+      <input type="text"  name="bug_assignee_email">
+    </div>
 
-<div class="form-group">
-    <label for="bug_priority">Bug Priority</label>
+    <div class="form-group">
+    <label for="bug_priority">Bug Priority: </label>
      <select name="bug_priority" id="">
          <option value="1">1</option>
          <option value="2">2</option>
          <option value="3">3</option>
      </select>
-</div>
+    </div>
 
-<div class="form-group">
-    <label for="related_department">Related Department </label>
-     <select name="related_department" id="">
-     
+    <div class="form-group">
+        <label for="related_department">Related Department:  </label>
+         <select name="related_department" id="">
+
      <?php
         $query = "SELECT * FROM department";
         $department_query = mysqli_query($connection,$query);
@@ -65,15 +66,14 @@ if(isset($_POST['create_bug'])) {
         }
      ?>
      </select>
-             
-       
-</div>
+    </div>
  
- <div class="form-group">
-    <label for="bug_type">Bug Type</label>
-     <select name="bug_type" id="">
+     <div class="form-group">
+        <label for="bug_type">Bug Type: </label>
+         <select name="bug_type" id="">
      
      <?php
+             //get enums from table
         $query = "SELECT COLUMN_TYPE FROM information_schema.COLUMNS WHERE TABLE_NAME = 'bug' AND COLUMN_NAME = 'bug_type'";
         $bug_type_query = mysqli_query($connection,$query);
         confirmQuery($bug_type_query);
@@ -84,25 +84,46 @@ if(isset($_POST['create_bug'])) {
 
      ?>
      </select>
-             
-</div>
-  
-<div class="form-group">
-    <label for="bug_close_date">Bug Close Date</label>
-    <input class="form-control" type="date" value="" id="example-date-input" name="bug_close_date">
-
-</div>
-
-<div class="form-group">
- <label for="post_content">Bug Description</label>
- <textarea class="form-control" name="bug_description" id="body" cols="30" rows="10">
- </textarea>
-</div>
+    </div>
     
-     
-<div class="form-group">
-  <input class="btn btn-primary" type="submit" name="create_bug" value="Create Bug">
-</div>
+     <div class="form-group">
+        <label for="related_department">Tags: </label>
+         <select name="related_department" id="">
+
+     <?php
+        $query = "SELECT * FROM tags";
+        $tags_query = mysqli_query($connection,$query);
+        confirmQuery($tags_query);
+        while($row = mysqli_fetch_assoc($tags_query)){
+            $tag = new Tag($row);
+            echo "<option value='{$tag->id}'>{$tag->name}</option>";
+        }
+     ?>
+     </select>
+    </div>
+     <div class="form-group ">
+        <label for="related_department">Or create a new Tag: </label>
+        <input type="text"  id="inputPassword2" placeholder="New Tag">
+        <button type="submit" class="btn btn-primary mb-2" name="create_tag">Create Tag</button>
+    </div>
+ 
+  
+    <div class="form-group">
+        <label for="bug_close_date">Bug Close Date:</label>
+        <input class="form-control" type="date" value="" id="example-date-input" name="bug_close_date">
+
+    </div>
+
+    <div class="form-group">
+     <label for="post_content">Bug Description: </label>
+     <textarea class="form-control" name="bug_description" id="body" cols="30" rows="10">
+     </textarea>
+    </div>
+
+
+    <div class="form-group">
+      <input class="btn btn-primary" type="submit" name="create_bug" value="Create Bug">
+    </div>
 
   
 
