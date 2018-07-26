@@ -42,6 +42,25 @@ function increase_comment_query($bug_comment_count, $bug_id){
     confirmQuery($increase_bug_comment_query);     
 }
 
+function create_tag($name){
+    global $connection;
+    $query = "INSERT INTO tags(tag_name) VALUES ('{$name}') ";
+    $create_tag_query = mysqli_query($connection, $query);
+    confirmQuery($create_tag_query);
+}
+
+function get_tag_by_name($name){
+    global $connection;
+    $qeury = "SELECT * FROM tags WHERE tag_name = '$name' ";
+    $tag_query = mysqli_query($connection, $qeury);
+    confirmQuery($tag_query);
+    return $tag_query;
+}
+
+function get_tag_count($query){
+    return mysqli_num_rows($query);
+}
+
 function create_comment($comment_content, $bug_id, $user_id){
     global $connection;
     if(!empty($comment_content)){

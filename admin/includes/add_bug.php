@@ -1,5 +1,20 @@
 <?php include "includes/tag.php" ?>
 <?php
+if(isset($_POST['create_tag'])){
+    $name = $_POST['bug_name'];
+    $tag_query = get_tag_by_name($name);
+    $tag_in_database_count = get_tag_count($tag_query);
+    
+    if($name == ''){
+        echo"<script>alert('The Field cannot be empty')</script>";
+    }else if($tag_in_database_count > 0){
+         echo"<script>alert('We found your tag in our database')</script>";
+    }
+    else{
+        create_tag($name);
+        echo "<p class='bg-success'>tag created</p>";
+    }
+}
 
 if(isset($_POST['create_bug'])) {
     $bug_title = $_POST['bug_title'];
@@ -103,7 +118,7 @@ if(isset($_POST['create_bug'])) {
     </div>
      <div class="form-group ">
         <label for="related_department">Or create a new Tag: </label>
-        <input type="text"  id="inputPassword2" placeholder="New Tag">
+        <input type="text"  name="bug_name" placeholder="New Tag">
         <button type="submit" class="btn btn-primary mb-2" name="create_tag">Create Tag</button>
     </div>
  
