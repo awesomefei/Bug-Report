@@ -82,21 +82,32 @@ function get_all_users(){
 }
 
 function search_user_by_id($user_id){
-            global $connection;
-            $user_query = "SELECT * FROM users WHERE user_id = $user_id LIMIT 1 ";
-            $user_id_query = mysqli_query($connection, $user_query);
-            confirmQuery($user_id_query);
-            return $user_id_query;
+    global $connection;
+    $user_query = "SELECT * FROM users WHERE user_id = $user_id LIMIT 1 ";
+    $user_id_query = mysqli_query($connection, $user_query);
+    confirmQuery($user_id_query);
+    return $user_id_query;
 }
 
 function get_user_id_by_email($email){
     global $connection;
-    $target_user_query = "SELECT user_id FROM users WHERE username = '$email' LIMIT 1 ";
+    $target_user_query = "SELECT user_id FROM users WHERE user_email = '{$email}' LIMIT 1 ";
     $user_id = mysqli_query($connection,$target_user_query);
-    while($row = mysqli_fetch_assoc($user_id)){
-        $target_user_id = $row['user_id'];
-    }
+    confirmQuery($user_id); 
+    $row = mysqli_fetch_array($user_id);
+    $target_user_id = $row['user_id'];
     return $target_user_id;
+}
+
+function get_tag_id_by_tag_name($tag_name){
+    global $connection;
+    $query = "SELECT tag_id FROM tags WHERE tag_name = '{$tag_name}' LIMIT 1 ";
+    $tag_id_query = mysqli_query($connection,$query);
+    confirmQuery($tag_id_query);
+    $row = mysqli_fetch_array($tag_id_query);
+    $tag_id = $row['tag_id'];
+    return $tag_id;
+    
 }
 
 function appendSortBy($query, $source){

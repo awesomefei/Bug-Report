@@ -18,24 +18,15 @@ if(isset($_POST['create_tag'])){
 
 if(isset($_POST['create_bug'])) {
     $bug_title = $_POST['bug_title'];
-    
-    $assignee_query="SELECT user_id FROM users WHERE user_email = '$_POST[bug_assignee_email]'";
-    $bug_assignee = mysqli_query($connection, $assignee_query);  
-    confirmQuery($bug_assignee);
-    
-    while($row = mysqli_fetch_assoc($bug_assignee)){
-         $bug_assignee_id = $row['user_id'];
-        }
+    $assingee_email = $_POST['bug_assignee_email'];
+    $bug_assignee_id = get_user_id_by_email($assingee_email);
     $bug_type = $_POST['bug_type'];
+    $bug_description = $_POST['bug_description'];
+    $bug_reporter_id = $_SESSION['user_id'];
+    $bug_close_date = $_POST['bug_close_date'];
+    $bug_priority = $_POST['bug_priority'];    
+    $tag_id=$_POST['tag_id'];
     
-    $bug_description       = $_POST['bug_description'];
-
-    $bug_reporter_id        = $_SESSION['user_id'];
-
-    $bug_close_date         = $_POST['bug_close_date'];
-    
-    $bug_priority = $_POST['bug_priority'];
-
     $query = "INSERT INTO bug(bug_title, bug_assignee_id, bug_open_date, lastupdate, priority, bug_close_date, bug_reporter_id, description) ";
 
     $query .= "VALUES('{$bug_title}',{$bug_assignee_id},now(), now(),'{$bug_priority}','{$bug_close_date}', {$bug_reporter_id}, '{$bug_description}') "; 
@@ -102,11 +93,10 @@ if(isset($_POST['create_bug'])) {
     </div>
     
      <div class="form-group">
-        <label for="related_department">Tags: </label>
-         <select name="related_department" id="">
-
+        <label for="tag_name">Tags: </label>
+         <select name='tag_id' id="">
      <?php
-        $query = "SELECT * FROM tags";
+        $query = "SELECT * FROM tags ORDER BY tag_name";
         $tags_query = mysqli_query($connection,$query);
         confirmQuery($tags_query);
         while($row = mysqli_fetch_assoc($tags_query)){
