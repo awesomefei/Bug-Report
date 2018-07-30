@@ -1,9 +1,16 @@
 <?php include "includes/tag.php" ?>
 <?php
+//if(isset($_POST['add_tag"'])){
+//    echo "<h1> helpp </h1>";
+////     $tag_input = $_POST['bug_tag_name'];
+//    
+//}
+    
 if(isset($_POST['create_tag'])){
     $name = $_POST['bug_name'];
     $tag_query = get_tag_by_name($name);
     $tag_in_database_count = get_tag_count($tag_query);
+    
     
     if($name == ''){
         echo"<script>alert('The Field cannot be empty')</script>";
@@ -17,6 +24,9 @@ if(isset($_POST['create_tag'])){
 }
 
 if(isset($_POST['create_bug'])) {
+    $tag_name = $_POST['bug_tag_name'];
+        die('11111111' . $tag_name);
+
     $bug_title = $_POST['bug_title'];
     $assingee_email = $_POST['bug_assignee_email'];
     $bug_assignee_id = get_user_id_by_email($assingee_email);
@@ -85,7 +95,7 @@ if(isset($_POST['create_bug'])) {
         confirmQuery($bug_type_query);
         $row = mysqli_fetch_assoc($bug_type_query);
         $enumList = explode(",", str_replace("'", "", substr($row['COLUMN_TYPE'], 5, (strlen($row['COLUMN_TYPE'])-6))));
-         foreach($enumList as $value)
+        foreach($enumList as $value)
             echo "<option value='{$value}'>$value</option>";
 
      ?>
@@ -94,18 +104,67 @@ if(isset($_POST['create_bug'])) {
     
      <div class="form-group">
         <label for="tag_name">Tags: </label>
-         <select name='tag_id' id="">
+         <select name='tag_id' id="tag_id">
      <?php
         $query = "SELECT * FROM tags ORDER BY tag_name";
         $tags_query = mysqli_query($connection,$query);
         confirmQuery($tags_query);
         while($row = mysqli_fetch_assoc($tags_query)){
             $tag = new Tag($row);
-            echo "<option value='{$tag->id}'>{$tag->name}</option>";
+            echo "<option value='{$tag->id}'>{$tag->name} </option>";
         }
      ?>
-     </select>
+         </select>
+         
+         <input type="button"  class="btn btn-primary mb-2" name="add_tag" id="addTagBtn" value="Add Tag"></input>
+         
     </div>
+    
+    <div class="form-group" id="addTagDiv">
+<!--        <input type="text" id="addTagDiv" class="form-control" name="bug_tag_name">-->
+        <?php
+                    
+        ?>
+    </div>    
+    <script>
+        var parent = document.getElementById("addTagDiv");
+        document.getElementById("addTagBtn").addEventListener("click", addTag);
+        
+        function getSelectedText(elementId) {
+            var elt = document.getElementById(elementId);
+
+            if (elt.selectedIndex == -1)
+                return null;
+
+            return elt.options[elt.selectedIndex].text;
+        }
+        
+        function addTag(){
+            var optionText = getSelectedText('tag_id');
+            var htmlSpan = document.createElement("SPAN");
+            parent.appendChild(htmlSpan);
+
+            var btn = document.createElement("BUTTON");
+            btn.setAttribute("class", "btn btn-info mb-2");
+            btn.setAttribute("name", "bug_tag_name");
+  
+            parent.appendChild(btn);
+            htmlSpan.appendChild(btn);
+            var btnText = document.createTextNode(optionText);
+            btn.appendChild(btnText);
+            var span1 = document.createElement("SPAN");
+            span1.setAttribute("id", "cross");
+            span1.innerHTML=" &times;" ;
+            btn.appendChild(span1);
+            var htmlSpan1 = document.createElement("SPAN");
+            parent.appendChild(htmlSpan1);
+            
+            document.getElementById("cross").addEventListener("click", function(){
+                htmlSpan.removeChild(btn);
+            });
+        }
+    </script>
+    
      <div class="form-group ">
         <label for="related_department">Or create a new Tag: </label>
         <input type="text"  name="bug_name" placeholder="New Tag">
