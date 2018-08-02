@@ -2,12 +2,11 @@
 <?php
 //if(isset($_POST['add_tag"'])){
 //    echo "<h1> helpp </h1>";
-////     $tag_input = $_POST['bug_tag_name'];
-//    
 //}
-    
+//    
 if(isset($_POST['create_tag'])){
     $name = $_POST['bug_name'];
+    
     $tag_query = get_tag_by_name($name);
     $tag_in_database_count = get_tag_count($tag_query);
     
@@ -24,9 +23,8 @@ if(isset($_POST['create_tag'])){
 }
 
 if(isset($_POST['create_bug'])) {
-    $tag_name = $_POST['bug_tag_name'];
-        die('11111111' . $tag_name);
-
+    
+    $bug_tag_array = $_POST["bug_tag_name"];
     $bug_title = $_POST['bug_title'];
     $assingee_email = $_POST['bug_assignee_email'];
     $bug_assignee_id = get_user_id_by_email($assingee_email);
@@ -44,6 +42,21 @@ if(isset($_POST['create_bug'])) {
     $create_bug_query = mysqli_query($connection, $query);  
 
     confirmQuery($create_bug_query);
+    //get the lastest bug id
+    $bug_id = get_primary_id();
+    
+    
+    for($i = 0; $i < sizeof($bug_tag_array); $i++) {
+        
+        //get tag_id by tag_name
+        $tag_id = get_tag_id_by_tag_name($bug_tag_array[$i]);            
+        //insert new bug-tag pair
+        create_bug_tag($bug_id, $tag_id[0]);
+
+    }
+    
+    
+   
     echo "<p class='bg-success'>bug created</p>";
    }    
 ?> 
@@ -120,48 +133,88 @@ if(isset($_POST['create_bug'])) {
          
     </div>
     
-    <div class="form-group" id="addTagDiv">
-<!--        <input type="text" id="addTagDiv" class="form-control" name="bug_tag_name">-->
+    
+    
+    <div class="input-group" id="addTagDiv">
+       
         <?php
-                    
+
         ?>
-    </div>    
-    <script>
+    </div>
+       
+ 
+    <script>        
         var parent = document.getElementById("addTagDiv");
         document.getElementById("addTagBtn").addEventListener("click", addTag);
         
         function getSelectedText(elementId) {
             var elt = document.getElementById(elementId);
 
-            if (elt.selectedIndex == -1)
+            if (elt.selectedIndex == -1) {
                 return null;
+            }
 
             return elt.options[elt.selectedIndex].text;
         }
         
         function addTag(){
             var optionText = getSelectedText('tag_id');
-            var htmlSpan = document.createElement("SPAN");
-            parent.appendChild(htmlSpan);
-
-            var btn = document.createElement("BUTTON");
-            btn.setAttribute("class", "btn btn-info mb-2");
-            btn.setAttribute("name", "bug_tag_name");
-  
-            parent.appendChild(btn);
-            htmlSpan.appendChild(btn);
-            var btnText = document.createTextNode(optionText);
-            btn.appendChild(btnText);
-            var span1 = document.createElement("SPAN");
-            span1.setAttribute("id", "cross");
-            span1.innerHTML=" &times;" ;
-            btn.appendChild(span1);
-            var htmlSpan1 = document.createElement("SPAN");
-            parent.appendChild(htmlSpan1);
             
-            document.getElementById("cross").addEventListener("click", function(){
-                htmlSpan.removeChild(btn);
-            });
+            var tagInput = document.createElement("INPUT");
+            parent.appendChild(tagInput);
+            tagInput.setAttribute("class", "btn btn-info mb-2");
+            tagInput.setAttribute("name", "bug_tag_name[]");
+            tagInput.setAttribute("type", "text");
+            tagInput.setAttribute("value", optionText);
+            
+//            var spanInput = document.createElement("BUTTON");
+//            spanInput.setAttribute("class", "input-group-btn");
+//            spanInput.setAttribute("id", "cross");
+//            spanInput.innerHTML=" &times;" ;
+//            parent.appendChild(spanInput);
+            
+            var crossDiv = document.createElement("DIV");
+            crossDiv.setAttribute("class", "input-group-append");
+            parent.appendChild(crossDiv);
+           
+            var spanInput = document.createElement("SPAN");
+                        
+            spanInput.setAttribute("class", "input-group-text");
+            spanInput.innerHTML=" &times;" ;
+            crossDiv.appendChild(spanInput);
+            
+            console.log(parent);
+//            <div class="input-group">
+//              <input type="text" class="form-control" placeholder="Search for...">
+//              <span class="input-group-btn">
+//                <button class="btn btn-default" type="submit">
+//                    <i class="fa fa-search"></i>
+//                </button>
+//              </span>
+//            </div>
+            
+//           var optionText = getSelectedText('tag_id');
+//            var htmlSpan = document.createElement("SPAN");
+//            parent.appendChild(htmlSpan);
+//            var btn = document.createElement("BUTTON");
+//            btn.setAttribute("class", "btn btn-info mb-2");
+//            btn.setAttribute("name", "bug_tag_name");
+//  
+//            parent.appendChild(btn);
+//            htmlSpan.appendChild(btn);
+//            var btnText = document.createTextNode(optionText);
+//            btn.appendChild(btnText);
+//            var span1 = document.createElement("SPAN");
+//            span1.setAttribute("id", "cross");
+//            span1.innerHTML=" &times;" ;
+//            btn.appendChild(span1);
+            
+//            var htmlSpan1 = document.createElement("SPAN");
+//            parent.appendChild(htmlSpan1);
+//            
+//            document.getElementById("cross").addEventListener("click", function(){
+//                htmlSpan.removeChild(btn);
+//            });
         }
     </script>
     
@@ -175,7 +228,6 @@ if(isset($_POST['create_bug'])) {
     <div class="form-group">
         <label for="bug_close_date">Bug Close Date:</label>
         <input class="form-control" type="date" value="" id="example-date-input" name="bug_close_date">
-
     </div>
 
     <div class="form-group">
@@ -183,7 +235,6 @@ if(isset($_POST['create_bug'])) {
      <textarea class="form-control" name="bug_description" id="body" cols="30" rows="10">
      </textarea>
     </div>
-
 
     <div class="form-group">
       <input class="btn btn-primary" type="submit" name="create_bug" value="Create Bug">

@@ -1,7 +1,5 @@
 <?php
 
-
-
 function get_each_page_display_num($dispay_per_page, $page_num){
     return ($page_num * $dispay_per_page) - $dispay_per_page;
 }
@@ -99,15 +97,28 @@ function get_user_id_by_email($email){
     return $target_user_id;
 }
 
+function get_primary_id(){
+    global $connection;
+    $qeury_id = "SELECT LAST_INSERT_ID()";
+    $qeury_id_query = mysqli_query($connection, $qeury_id);  
+    $row = mysqli_fetch_array($qeury_id_query);
+    return $row[0];
+}
+
 function get_tag_id_by_tag_name($tag_name){
     global $connection;
-    $query = "SELECT tag_id FROM tags WHERE tag_name = '{$tag_name}' LIMIT 1 ";
-    $tag_id_query = mysqli_query($connection,$query);
+    $id_query = "SELECT tag_id FROM tags WHERE tag_name = '{$tag_name}' LIMIT 1 ";
+    $tag_id_query = mysqli_query($connection, $id_query);  
     confirmQuery($tag_id_query);
-    $row = mysqli_fetch_array($tag_id_query);
-    $tag_id = $row['tag_id'];
+    $tag_id = mysqli_fetch_array($tag_id_query); 
     return $tag_id;
-    
+}
+
+function create_bug_tag($bug_id, $tag_id){
+    global $connection;
+    $bug_tag_query = "INSERT INTO bug_tag(bug_id, tag_id) VALUES('{$bug_id}', '{$tag_id}')";
+    $create_bug_tag_query = mysqli_query($connection, $bug_tag_query);  
+    confirmQuery($create_bug_tag_query);
 }
 
 function appendSortBy($query, $source){
