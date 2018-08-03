@@ -162,7 +162,7 @@ function create_bug_tag($bug_id, $tag_id){
     $bug_tag_query = "INSERT INTO bug_tag(bug_id, tag_id) 
     VALUES('{$bug_id}', '{$tag_id}')";
     $create_bug_tag_query = mysqli_query($connection, $bug_tag_query);  
-    confirmQuery($create_bug_tag_query);
+    confirmQuery('@@@@@@@@' . $create_bug_tag_query);
 }
 
 function appendSortBy($query, $source){

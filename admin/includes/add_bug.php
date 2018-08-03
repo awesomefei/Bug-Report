@@ -36,7 +36,7 @@
 
         $create_bug_query = mysqli_query($connection, $insert_query);  
 
-        confirmQuery($create_bug_query);
+        confirmQuery( $create_bug_query);
 
         // Get the lastest bug id
         $bug_id = get_primary_id();
@@ -143,6 +143,7 @@
             var spanInput = document.createElement("SPAN");
                         
             spanInput.setAttribute("class", "input-group-text");
+            tagInput.setAttribute("id", "cross[]");
             spanInput.innerHTML=" &times; " ;
             parent.appendChild(spanInput);
             

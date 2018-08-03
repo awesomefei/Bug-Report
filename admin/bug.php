@@ -216,7 +216,6 @@ if(isset($_POST['update_bug'])){
     }   
 }
 ?>
-               
                 <!-- Comments Form -->
     <div class="well">
         <form role="form" action="" method="post">
