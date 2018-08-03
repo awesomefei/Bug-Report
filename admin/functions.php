@@ -111,7 +111,7 @@ function get_tag_id_by_tag_name($tag_name){
     $tag_id_query = mysqli_query($connection, $id_query);  
     confirmQuery($tag_id_query);
     $tag_id = mysqli_fetch_array($tag_id_query); 
-    return $tag_id;
+    return $tag_id[0];
 }
 
 function create_bug_tag($bug_id, $tag_id){
