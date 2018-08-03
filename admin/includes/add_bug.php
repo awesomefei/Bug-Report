@@ -3,7 +3,6 @@
   
     if(isset($_POST['create_tag'])) {
         $name = $_POST['bug_name'];
-
         $tag_query = get_tag_by_name($name);
         $tag_count = get_tag_count($tag_query);
 
@@ -75,9 +74,7 @@
         <label for="related_department">Related Department:</label>
         <select name="related_department">
             <?php
-            $look_up_query = "SELECT * FROM department";
-            $department_query = mysqli_query($connection, $look_up_query);
-            confirmQuery($department_query);
+            $department_query = get_all_departments();
             while($row = mysqli_fetch_assoc($department_query)){
                 $dep_title = $row['department_title'];
                 $dep_id = $row['department_id']; 
@@ -92,13 +89,9 @@
         <select name="bug_type">
             <?php
                 //get enums from table
-                $query = "SELECT COLUMN_TYPE FROM information_schema.COLUMNS WHERE TABLE_NAME = 'bug' AND COLUMN_NAME = 'bug_type'";
-                $bug_type_query = mysqli_query($connection,$query);
-                confirmQuery($bug_type_query);
-                $row = mysqli_fetch_assoc($bug_type_query);
-                $enumList = explode(",", str_replace("'", "", substr($row['COLUMN_TYPE'], 5, (strlen($row['COLUMN_TYPE'])-6))));
-                foreach($enumList as $value)
-                    echo "<option value='{$value}'>$value</option>";
+            $bug = "bug";
+            $bug_type = "bug_type";
+            get_enum(bug, bug_type);
             ?>
        </select>
     </div>

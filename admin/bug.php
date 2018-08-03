@@ -16,8 +16,7 @@
         $the_bug_id = $_GET['b_id'];
     }
 
-    $query = "SELECT * FROM bug WHERE bug_id = $the_bug_id LIMIT 1 ";
-    $select_bug_query = mysqli_query($connection, $query);
+    $select_bug_query = get_bug_by_id($the_bug_id);
     while($row = mysqli_fetch_assoc($select_bug_query)){
         $current_bug = new Bug($row);
         //for javascript
@@ -28,7 +27,8 @@
         
         //get bug_reporter info by reporter_id
         $reporter_query = search_user_by_id($current_bug->reporter_id);
-        while($selected_reporter_row = mysqli_fetch_assoc($reporter_query)){
+        while($selected_reporter_row = mysqli_fetch_assoc($reporter_query)
+             ){
              $reporter = new User($selected_reporter_row);
         }
         //get bug_assignee info by assignee_id
@@ -42,7 +42,7 @@
               ID:<?php echo $the_bug_id ?>
             </h4>
         </div>
-        <div class="col-lg-6">
+        <div class="col-lg-7">
             <h4 class="page-header">
               Title:
                <?php
@@ -50,25 +50,33 @@
                 ?>
             </h4>
         </div>
-        <div class="col-lg-4">
-            <a href="dataAnalysis.php"><h4 class="page-header"><i class="fas fa-chart-bar fa-lg"></i>
+        <div class="col-lg-3">
+            <a href="dataAnalysis.php"><h4 class="page-header">
+            <i class="fas fa-chart-bar fa-lg"></i>
             </a></h4>
         </div> 
     </div>
         
     <div class="row">
-    <div class="col-lg-8">   
+    <div class="col-lg-9">   
         <div class="row">
-            <div class="media col-lg-10">
-              <img class="align-self-start mr-3" src="../image/profile.jpg" alt="Generic placeholder image" style="width:50px;height:50px;">
+            <div class="media col-lg-9">
+              <img class="align-self-start mr-3" 
+              src="../image/profile.jpg" alt="Generic placeholder image" 
+              style="width:50px;height:50px;">
               <div class="media-body">
-                <h5 class="mt-0"><?php echo "Author: " . $reporter->firstname . " " . $reporter->lastname; ?></h5>
+                <h5 class="mt-0">
+                   <?php 
+                        echo "Author: " . $reporter->firstname 
+                            . " " . $reporter->lastname; 
+                    ?>
+                </h5>
               </div>
             </div>
-            <div class="col-lg-2">
+            <div class="col-lg-3">
              <p><span class="glyphicon glyphicon-time"></span> 
                            <?php
-                                $current_bug->open_date;
+                                echo $current_bug->open_date;
                             ?>
              </p>
             </div>
@@ -104,15 +112,18 @@ while($row = mysqli_fetch_array($comment_query)){
             <div class="media col-lg-10">
               <img class="align-self-start mr-3" src="../image/<?php
             echo $user->image
-            ?>" alt="Generic placeholder image" style="width:50px;height:50px;">
+            ?>" alt="Generic placeholder image" 
+             style="width:50px;height:50px;">
               <div class="media-body">
-                <h5 class="mt-0"><?php echo $user->firstname . " " . $user->lastname; ?>
+                <h5 class="mt-0">
+                <?php echo $user->firstname . " " . $user->lastname; ?>
                 <a href="#">#<?php 
                     echo $bug_comment_count_show++;
                     ?></a>
                 </h5>
               </div>
             </div>
+            
             <div class="col-lg-2">
              <p><span class="glyphicon glyphicon-time"></span> 
                    <?php
@@ -133,7 +144,8 @@ if(isset($_POST['create_comment'])){
     $the_bug_id = $_GET['b_id'];
     $comment_content = $_POST['comment_content'];
     if(!empty($comment_content)){
-       create_comment($auto_comment_content, $the_bug_id,$_SESSION[user_id]);
+       create_comment($auto_comment_content, 
+                      $the_bug_id,$_SESSION[user_id]);
         increase_comment_query($bug_comment_count,$the_bug_id);    
         redirect("/BugReport/admin/bug.php?b_id={$the_bug_id}");
     }else{
@@ -152,24 +164,27 @@ if(isset($_POST['update_bug'])){
 //get bug_assignee_id by user_email   
 
     $bug_assignee_id = get_user_id_by_email($user_email);   
-    
     $comment_content =$_SESSION['email'] . " changed ";
     $auto_comment_content = "";
 
     if($current_bug->status != $bug_new_status){ 
-            $tempString = $comment_content . "status from " . $current_bug->status . " to ". $bug_new_status;
-            array_push($arr, $tempString);
+        $tempString = $comment_content . "status from " 
+            . $current_bug->status . " to ". $bug_new_status;
+        array_push($arr, $tempString);
         }
     if($bug_pre_priority != $bug_new_priority){
-        $tempString = $comment_content . "priority from " . $bug_pre_priority. " to ". $bug_new_priority;
+        $tempString = $comment_content . "priority from " 
+            . $bug_pre_priority. " to ". $bug_new_priority;
         array_push($arr, $tempString);
     }
     if($bug_pre_severity != $bug_new_severity){
-        $tempString = $comment_content . "severity from " . $bug_pre_severity . " to ". $bug_new_severity;
+        $tempString = $comment_content . "severity from " 
+            . $bug_pre_severity . " to ". $bug_new_severity;
         array_push($arr, $tempString);
     }
     if($bug_pre_assignee_id != $bug_assignee_id){
-        $tempString = $comment_content . "asignee from " . $assignee_email . " to ". $user_email;
+        $tempString = $comment_content . "asignee from " 
+            . $assignee_email . " to ". $user_email;
         array_push($arr, $tempString);
     }
 
@@ -194,7 +209,8 @@ if(isset($_POST['update_bug'])){
 
 //create comment automatically
     if(!empty($auto_comment_content)){
-        create_comment($auto_comment_content, $the_bug_id,$_SESSION[user_id]);
+        create_comment($auto_comment_content, $the_bug_id,
+                       $_SESSION[user_id]);
         increase_comment_query($bug_comment_count,$the_bug_id);    
         redirect("/BugReport/admin/bug.php?b_id={$the_bug_id}");
     }   
@@ -206,21 +222,24 @@ if(isset($_POST['update_bug'])){
         <form role="form" action="" method="post">
 
             <div class="form-group">
-                <textarea name="comment_content" class="form-control" rows="10" id="body"></textarea>
+                <textarea name="comment_content" class="form-control" 
+                rows="10" id="body"></textarea>
 
             </div>
 
-            <button type="submit" name="create_comment" class="btn btn-primary">Send</button>
+            <button type="submit" name="create_comment" 
+            class="btn btn-primary">Send</button>
         </form>
     </div>
 <hr>
 </div>
            
-    <div class="col-lg-4 well">
+    <div class="col-lg-3 well">
        <form role="form" action="" method="post">
         <div class="form-group">
             <label for="status">Status: </label>
-            <select class="custom-select custom-select-lg mb-3" name="bug_status" id="bugStatus">
+            <select class="custom-select custom-select-lg mb-3" 
+              name="bug_status" id="bugStatus">
                <?php
                 $enumList = iterate_enum_in_table('bug', 'status');
                  foreach($enumList as $value)
@@ -241,12 +260,14 @@ if(isset($_POST['update_bug'])){
         
         <div class="form-group">
             <label for="status">Reassign to: </label>   
-            <select class="custom-select custom-select-lg mb-3" name='user_email' id="reassign"> 
+            <select class="custom-select custom-select-lg mb-3" 
+              name='user_email' id="reassign"> 
                <?php
                 $user_query = get_all_users();
                 while($row = mysqli_fetch_assoc($user_query)){
                     $user_email = $row[user_email];
-                    echo "<option value='{$user_email}'>$user_email</option>";
+                    echo "<option value='{$user_email}'>
+                    $user_email</option>";
                 }
                 ?>
             </select>         
@@ -265,7 +286,8 @@ if(isset($_POST['update_bug'])){
                 
          <div class="form-group">
             <label for="status">Severity: </label>   
-            <select class="custom-select custom-select-lg mb-3" name="bug_serverity" id="bugServerity">
+            <select class="custom-select custom-select-lg mb-3" 
+              name="bug_serverity" id="bugServerity">
                <?php
 
                 $enumList = iterate_enum_in_table('bug', 'bug_severity');
@@ -281,7 +303,8 @@ if(isset($_POST['update_bug'])){
                 $users_query = get_all_users();
                 while($row = mysqli_fetch_assoc($users_query)){
                     $user_email = $row[user_email];
-                    echo "<option value='{$user_email}'>$user_email</option>";
+                    echo "<option value='{$user_email}'>$user_email
+                    </option>";
                 }
  
 
@@ -289,17 +312,20 @@ if(isset($_POST['update_bug'])){
             </select>         
         </div>  
         <div class="form-group">
-          <input class="btn btn-primary" type="submit" name="update_bug" value="Update Bug" >
+          <input class="btn btn-primary" type="submit" name="update_bug" 
+          value="Update Bug" >
         </div>
    
         </form>
         <!-- Dynamic Options -->
         <script>
             //Dynamic Priority Option
-            var priorityLen = document.getElementById("bugPriority").options.length;
+            var priorityLen = 
+                document.getElementById("bugPriority").options.length;
             var str = <?php echo json_encode($bug_pre_priority) ?>;
             for ( var i = 0; i < priorityLen; i++ ) {
-                if(document.getElementById("bugPriority").options[i].text == str){
+                if(document.getElementById("bugPriority").options[i].text 
+                   == str){
                     document.getElementById("bugPriority").options[i].selected = true;
                    }
             }
@@ -328,8 +354,10 @@ if(isset($_POST['update_bug'])){
                     document.getElementById("bugServerity").options[i].selected = true;
                    }
             }           
-        </script>  
-    </div>       
+        </script> 
+         
+    </div>
+           
 </div>
                 <!-- /.row -->
 
