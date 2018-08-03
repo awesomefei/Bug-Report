@@ -10,7 +10,6 @@ if(isset($_POST['create_tag'])){
     $tag_query = get_tag_by_name($name);
     $tag_in_database_count = get_tag_count($tag_query);
     
-    
     if($name == ''){
         echo"<script>alert('The Field cannot be empty')</script>";
     }else if($tag_in_database_count > 0){
@@ -36,15 +35,14 @@ if(isset($_POST['create_bug'])) {
     $tag_id=$_POST['tag_id'];
     
     $query = "INSERT INTO bug(bug_title, bug_assignee_id, bug_open_date, lastupdate, priority, bug_close_date, bug_reporter_id, description) ";
-
     $query .= "VALUES('{$bug_title}',{$bug_assignee_id},now(), now(),'{$bug_priority}','{$bug_close_date}', {$bug_reporter_id}, '{$bug_description}') "; 
 
     $create_bug_query = mysqli_query($connection, $query);  
 
     confirmQuery($create_bug_query);
+    
     //get the lastest bug id
     $bug_id = get_primary_id();
-    
     
     for($i = 0; $i < sizeof($bug_tag_array); $i++) {
         
