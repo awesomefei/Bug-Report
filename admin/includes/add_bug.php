@@ -1,9 +1,6 @@
 <?php include "includes/tag.php" ?>
 <?php
-//if(isset($_POST['add_tag"'])){
-//    echo "<h1> helpp </h1>";
-//}
-//    
+  
 if(isset($_POST['create_tag'])){
     $name = $_POST['bug_name'];
     
@@ -52,9 +49,7 @@ if(isset($_POST['create_bug'])) {
         create_bug_tag($bug_id, $tag_id[0]);
 
     }
-    
-    
-   
+       
     echo "<p class='bg-success'>bug created</p>";
    }    
 ?> 
@@ -131,15 +126,13 @@ if(isset($_POST['create_bug'])) {
          
     </div>
     
-    
-    
-    <div class="input-group" id="addTagDiv">
+    <div class="form-group has-feedback" id="addTagDiv">
        
         <?php
 
         ?>
+        
     </div>
-       
  
     <script>        
         var parent = document.getElementById("addTagDiv");
@@ -155,7 +148,8 @@ if(isset($_POST['create_bug'])) {
             return elt.options[elt.selectedIndex].text;
         }
         
-        function addTag(){
+        function addTag() {
+            
             var optionText = getSelectedText('tag_id');
             
             var tagInput = document.createElement("INPUT");
@@ -164,55 +158,13 @@ if(isset($_POST['create_bug'])) {
             tagInput.setAttribute("name", "bug_tag_name[]");
             tagInput.setAttribute("type", "text");
             tagInput.setAttribute("value", optionText);
-            
-//            var spanInput = document.createElement("BUTTON");
-//            spanInput.setAttribute("class", "input-group-btn");
-//            spanInput.setAttribute("id", "cross");
-//            spanInput.innerHTML=" &times;" ;
-//            parent.appendChild(spanInput);
-            
-            var crossDiv = document.createElement("DIV");
-            crossDiv.setAttribute("class", "input-group-append");
-            parent.appendChild(crossDiv);
            
             var spanInput = document.createElement("SPAN");
                         
             spanInput.setAttribute("class", "input-group-text");
-            spanInput.innerHTML=" &times;" ;
-            crossDiv.appendChild(spanInput);
+            spanInput.innerHTML=" &times; " ;
+            parent.appendChild(spanInput);
             
-            console.log(parent);
-//            <div class="input-group">
-//              <input type="text" class="form-control" placeholder="Search for...">
-//              <span class="input-group-btn">
-//                <button class="btn btn-default" type="submit">
-//                    <i class="fa fa-search"></i>
-//                </button>
-//              </span>
-//            </div>
-            
-//           var optionText = getSelectedText('tag_id');
-//            var htmlSpan = document.createElement("SPAN");
-//            parent.appendChild(htmlSpan);
-//            var btn = document.createElement("BUTTON");
-//            btn.setAttribute("class", "btn btn-info mb-2");
-//            btn.setAttribute("name", "bug_tag_name");
-//  
-//            parent.appendChild(btn);
-//            htmlSpan.appendChild(btn);
-//            var btnText = document.createTextNode(optionText);
-//            btn.appendChild(btnText);
-//            var span1 = document.createElement("SPAN");
-//            span1.setAttribute("id", "cross");
-//            span1.innerHTML=" &times;" ;
-//            btn.appendChild(span1);
-            
-//            var htmlSpan1 = document.createElement("SPAN");
-//            parent.appendChild(htmlSpan1);
-//            
-//            document.getElementById("cross").addEventListener("click", function(){
-//                htmlSpan.removeChild(btn);
-//            });
         }
     </script>
     
