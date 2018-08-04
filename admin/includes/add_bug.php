@@ -111,15 +111,19 @@
             ?>
         </select>
         <input type="button"  class="btn btn-primary mb-2" name="add_tag" 
-        id="addTagBtn" value="Add Tag"></input>
+        id="addTagBtn" value="Add Tag" onclick="addTag()"></input>
     </div>
     
-    <div class="form-group has-feedback" id="addTagDiv"></div>
+    <div class="form-group" id="addTagDiv">
+        
+    </div>
  
-    <script>        
+    <script>
+        var tagNameList = []; 
+        var tagIdList = [];
+        var crossId = 0;
         var parent = document.getElementById("addTagDiv");
-        document.getElementById("addTagBtn").addEventListener("click", 
-                                                              addTag);
+        
         function getSelectedText(elementId) {
             var elt = document.getElementById(elementId);
 
@@ -130,24 +134,35 @@
             return elt.options[elt.selectedIndex].text;
         }
         
+         function removeRecord(i) {
+            tagNameList.splice(i, 1);
+            var newFood = "";
+            // re-display the records from tagNameList the same way we did it in addToFood()
+            for (var i = 0; i < tagNameList.length; i++) {
+                newFood += tagNameList[i] + 
+                    "<a href='#' onClick='removeRecord(" + i + ");'> &times; </a> " +  
+                " <br>";
+            };
+            document.getElementById('addTagDiv').innerHTML = newFood;
+            }
+
         function addTag() {
+            //get tag_name
             var optionText = getSelectedText('tag_id');
             
-            var tagInput = document.createElement("INPUT");
-            parent.appendChild(tagInput);
-            tagInput.setAttribute("class", "btn btn-info mb-2");
-            tagInput.setAttribute("name", "bug_tag_name[]");
-            tagInput.setAttribute("type", "text");
-            tagInput.setAttribute("value", optionText);
-           
-            var spanInput = document.createElement("SPAN");
-                        
-            spanInput.setAttribute("class", "input-group-text");
-            tagInput.setAttribute("id", "cross[]");
-            spanInput.innerHTML=" &times; " ;
-            parent.appendChild(spanInput);
+            tagIdList.push(js_tag_id);
+            tagNameList.push(optionText);
             
+            for(i = 0; i < tagNameList.length; i++) {
+                var newFood = tagNameList[i]+ 
+                    "<a href='#' onClick='removeRecord(" + i + ");'> &times; </a> " 
+                + " <br>";
+            };
+            document.getElementById('addTagDiv').innerHTML += newFood;
+                        
+            var js_tag_id = document.getElementById("tag_id").value;
         }
+ 
     </script>
     
      <div class="form-group ">
