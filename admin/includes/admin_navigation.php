@@ -78,21 +78,6 @@
                          Data Analysis</a>
                     </li>
 
-                    <li >
-                        <a href="comments.php"><i class="fa fa-fw fa-file"></i> Comments</a>
-                    </li>
-                    
-                   <li>
-                        <a href="javascript:;" data-toggle="collapse" data-target="#users_dropdown"><i class="fas fa-user"></i> Users<i class="fa fa-fw fa-caret-down"></i></a>
-                        <ul id="users_dropdown" class="collapse">
-                            <li>
-                                <a href="./users.php">view all users</a>
-                            </li>
-                            <li>
-                                <a href="users.php?source=add_user">Add User</a>
-                            </li>
-                        </ul>
-                    </li>
                     <li>
                         <a href="./new_profile.php"><i class="fas fa-file-signature"></i> Profile</a>
                     </li>

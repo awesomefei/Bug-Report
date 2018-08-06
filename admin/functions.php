@@ -31,14 +31,14 @@ function get_enum($table_name, $colum_name) {
         echo "<option value='{$value}'>$value</option>";
 }
 
-function get_each_page_display_num($dispay_per_page, $page_num){
+function get_each_page_display_num($dispay_per_page, $page_num) {
     return ($page_num * $dispay_per_page) - $dispay_per_page;
 }
 
-function display_page($total_page_count,$page_num){
+function display_page($total_page_count,$page_num) {
     for($current_page = 1; $current_page <= $total_page_count ; 
     $current_page++){
-        if($current_page == $page_num){
+        if($current_page == $page_num) {
             echo "<li class='page-item active'><a class='page-link' 
             href='assign_to_me.php?page={$current_page}'>
             {$current_page}</a></li>";
@@ -49,7 +49,7 @@ function display_page($total_page_count,$page_num){
     }
 }
 
-function get_total_page_count($target_user_id){
+function get_total_page_count($target_user_id) {
     global $connection;
     $dispay_per_page = 10;
     $bug_total_count = "SELECT * FROM bug WHERE bug_assignee_id = 
@@ -60,7 +60,7 @@ function get_total_page_count($target_user_id){
 }
 
 
-function iterate_enum_in_table($table_name, $column_name){
+function iterate_enum_in_table($table_name, $column_name) {
     global $connection; 
     $query = "SELECT COLUMN_TYPE FROM information_schema.COLUMNS WHERE 
     TABLE_NAME = '$table_name' AND COLUMN_NAME = '$column_name' ";
@@ -71,7 +71,7 @@ function iterate_enum_in_table($table_name, $column_name){
             5, (strlen($row['COLUMN_TYPE'])-6))));
 }
 
-function increase_comment_query($bug_comment_count, $bug_id){
+function increase_comment_query($bug_comment_count, $bug_id) {
     global $connection;
     $query = $bug_comment_count_query1 = "UPDATE bug SET comment_count = 
     $bug_comment_count+1 WHERE bug_id = $bug_id LIMIT 1 ";
@@ -79,14 +79,14 @@ function increase_comment_query($bug_comment_count, $bug_id){
     confirmQuery($increase_bug_comment_query);     
 }
 
-function create_tag($name){
+function create_tag($name) {
     global $connection;
     $query = "INSERT INTO tags(tag_name) VALUES ('{$name}') ";
     $create_tag_query = mysqli_query($connection, $query);
     confirmQuery($create_tag_query);
 }
 
-function get_tag_by_name($name){
+function get_tag_by_name_query($name) {
     global $connection;
     $qeury = "SELECT * FROM tags WHERE tag_name = '$name' ";
     $tag_query = mysqli_query($connection, $qeury);
@@ -94,13 +94,13 @@ function get_tag_by_name($name){
     return $tag_query;
 }
 
-function get_tag_count($query){
+function get_tag_count($query) {
     return mysqli_num_rows($query);
 }
 
 function create_comment($comment_content, $bug_id, $user_id){
     global $connection;
-    if(!empty($comment_content)){
+    if(!empty($comment_content)) {
         
         $query = "INSERT INTO comment (bug_id, user_id, comment_content, 
         comment_date) ";
@@ -112,7 +112,7 @@ function create_comment($comment_content, $bug_id, $user_id){
     }
 }
 
-function get_all_users(){
+function get_all_users() {
     global $connection;
     $query = "SELECT * FROM users ";
     $user_query = mysqli_query($connection,$query);
@@ -120,7 +120,7 @@ function get_all_users(){
     return $user_query;
 }
 
-function search_user_by_id($user_id){
+function search_user_by_id($user_id) {
     global $connection;
     $user_query = "SELECT * FROM users WHERE user_id = $user_id LIMIT 1 ";
     $user_id_query = mysqli_query($connection, $user_query);
@@ -128,7 +128,7 @@ function search_user_by_id($user_id){
     return $user_id_query;
 }
 
-function get_user_id_by_email($email){
+function get_user_id_by_email($email) {
     global $connection;
     $target_user_query = "SELECT user_id FROM users WHERE user_email = 
     '{$email}' LIMIT 1 ";
@@ -139,7 +139,7 @@ function get_user_id_by_email($email){
     return $target_user_id;
 }
 
-function get_primary_id(){
+function get_primary_id() {
     global $connection;
     $qeury_id = "SELECT LAST_INSERT_ID()";
     $qeury_id_query = mysqli_query($connection, $qeury_id);  
@@ -147,7 +147,7 @@ function get_primary_id(){
     return $row[0];
 }
 
-function get_tag_id_by_tag_name($tag_name){
+function get_tag_id_by_tag_name($tag_name) {
     global $connection;
     $id_query = "SELECT tag_id FROM tags WHERE tag_name = '{$tag_name}' 
     LIMIT 1 ";
@@ -165,7 +165,7 @@ function create_bug_tag($bug_id, $tag_id){
     confirmQuery('@@@@@@@@' . $create_bug_tag_query);
 }
 
-function appendSortBy($query, $source){
+function appendSortBy($query, $source) {
     $str = "ORDER BY ";
     switch($source){
         case 'sortByPriority';
@@ -183,7 +183,7 @@ function appendSortBy($query, $source){
     } 
 }
 
-function login_user($username, $password){
+function login_user($username, $password) {
     global $connection;
     
     $username = trim($username);
@@ -212,7 +212,7 @@ function login_user($username, $password){
 
     }
     
-    if(password_verify($password, $db_user_password)){
+    if(password_verify($password, $db_user_password)) {
         $_SESSION['username']= $db_username;
         $_SESSION['user_id']= $db_user_id;
         $_SESSION['firstname']= $db_user_firstname;
@@ -225,7 +225,7 @@ function login_user($username, $password){
     } 
 }
 
-function isAdmin($username=''){
+function isAdmin($username='') {
     global $connection;
     $query = "SELECT role FROM users WHERE username = '$username'";
     $result = mysqli_query($connection, $query);
@@ -239,7 +239,7 @@ function isAdmin($username=''){
 }
 
 
-function is_username_duplicate($username){
+function is_username_duplicate($username) {
     global $connection;
     $query = "SELECT username FROM users WHERE username = '$username'";
     $result = mysqli_query($connection, $query);
@@ -251,7 +251,7 @@ function is_username_duplicate($username){
     }
 }
 
-function is_email_duplicate($email){
+function is_email_duplicate($email) {
     global $connection;
     $query = "SELECT user_email FROM users WHERE user_email = '$email'";
     $result = mysqli_query($connection, $query);
@@ -264,7 +264,7 @@ function is_email_duplicate($email){
 }
 
 function register_user($username, $email, $password, $component, $level, 
-                       $firstname, $lastname, $image){
+                       $firstname, $lastname, $image) {
     global $connection;
        
     $username = mysqli_real_escape_string($connection,$username);
@@ -278,7 +278,7 @@ function register_user($username, $email, $password, $component, $level,
     component_title = '$component' LIMIT 1 ";
     $com_id_query = mysqli_query($connection, $com_query);
     confirmQuery($com_id_query);
-    while($row = mysqli_fetch_assoc($com_id_query)){
+    while($row = mysqli_fetch_assoc($com_id_query)) {
         $component_id = $row[component_id];
 
         $query = "INSERT INTO users (username, user_email, user_password, 
@@ -294,25 +294,25 @@ function register_user($username, $email, $password, $component, $level,
     
 }
 
-function redirect($location){
+function redirect($location) {
     return header('Location:' . $location);
 }
 
 //for secuity of deploying to internet
-function escape($string){
+function escape($string) {
     global $connection;
     mysqli_real_escape_string($connection, trim($string));
 }
 
 
-function confirmQuery($result){
+function confirmQuery($result) {
     global $connection;
     if(!$result){
         die("QUERY FAILED ." . mysqli_error($connection));
     }
 }
 
-function insert_categories(){
+function insert_categories() {
     global $connection;
     if(isset($_POST['submit'])){
     $cat_title = $_POST['cat_title'];
@@ -329,7 +329,7 @@ function insert_categories(){
     }  
 }
 
-function findAllCategories(){
+function findAllCategories() {
     global $connection;
     $query = 'SELECT * FROM category ';
     $select_cat = mysqli_query($connection,$query);                                    
@@ -347,7 +347,7 @@ function findAllCategories(){
     }
 }
 
-function deleteCategory(){
+function deleteCategory() {
     global $connection;    
     if(isset($_GET['delete'])){
         $the_cat_id = $_GET['delete'];

@@ -1,9 +1,8 @@
 <?php include "includes/tag.php" ?>
 <?php
-  
     if(isset($_POST['create_tag'])) {
         $name = $_POST['bug_name'];
-        $tag_query = get_tag_by_name($name);
+        $tag_query = get_tag_by_name_query($name);
         $tag_count = get_tag_count($tag_query);
 
         if($name == '') {
@@ -30,8 +29,8 @@
         $insert_query = "INSERT INTO bug(bug_title, bug_assignee_id, "
             . "bug_open_date, lastupdate, priority, bug_close_date, "
             . "bug_reporter_id, description) "
-            . "VALUES('{$bug_title}',{$assignee_id},now(), now(), "
-            . "'{$bug_priority}','{$bug_eta}', {$reporter_id}, "
+            . "VALUES('{$bug_title}', {$assignee_id}, now(), now(), "
+            . "'{$bug_priority}', '{$bug_eta}', {$reporter_id}, "
             . "'{$bug_description}') "; 
 
         $create_bug_query = mysqli_query($connection, $insert_query);  
@@ -88,10 +87,10 @@
         <label for="bug_type">Bug Type:</label>
         <select name="bug_type">
             <?php
-                //get enums from table
-            $bug = "bug";
-            $bug_type = "bug_type";
-            get_enum(bug, bug_type);
+                // Get bug type enums from table
+                $bug = "bug";
+                $bug_type = "bug_type";
+                get_enum(bug, bug_type);
             ?>
        </select>
     </div>
@@ -123,71 +122,63 @@
         var tagIdList = [];
         var crossId = 0;
         var parent = document.getElementById("addTagDiv");
+        var js_tag_id = document.getElementById("tag_id").value;
         
         function getSelectedText(elementId) {
             var elt = document.getElementById(elementId);
-
             if (elt.selectedIndex == -1) {
                 return null;
             }
-
             return elt.options[elt.selectedIndex].text;
         }
         
          function removeRecord(i) {
             tagNameList.splice(i, 1);
-            var newFood = "";
-            // re-display the records from tagNameList the same way we did it in addToFood()
+            var tags = "";
             for (var i = 0; i < tagNameList.length; i++) {
-                newFood += tagNameList[i] + 
-                    "<a href='#' onClick='removeRecord(" + i + ");'> &times; </a> " +  
-                " <br>";
+                tags += tagNameList[i] 
+                    +  "<a href='#' onClick='removeRecord(" 
+                    + i 
+                    + ");'> &times; </a><br>";
             };
-            document.getElementById('addTagDiv').innerHTML = newFood;
-            }
+            document.getElementById('addTagDiv').innerHTML = tags;
+        }
 
         function addTag() {
-            //get tag_name
             var optionText = getSelectedText('tag_id');
-            
-            tagIdList.push(js_tag_id);
             tagNameList.push(optionText);
             
-            for(i = 0; i < tagNameList.length; i++) {
-                var newFood = tagNameList[i]+ 
-                    "<a href='#' onClick='removeRecord(" + i + ");'> &times; </a> " 
-                + " <br>";
-            };
-            document.getElementById('addTagDiv').innerHTML += newFood;
-                        
-            var js_tag_id = document.getElementById("tag_id").value;
+            var newTag = optionText
+                + "<a href='#' onClick='removeRecord(" 
+                + (tagNameList.length - 1)
+                + ");'> &times; </a><br>" 
+            document.getElementById('addTagDiv').innerHTML += newTag;
         }
- 
     </script>
     
      <div class="form-group ">
         <label for="related_department">Or create a new Tag: </label>
         <input type="text"  name="bug_name" placeholder="New Tag">
         <button type="submit" class="btn btn-primary mb-2" 
-        name="create_tag">Create Tag</button>
+            name="create_tag">Create Tag</button>
     </div>
  
   
     <div class="form-group">
         <label for="bug_close_date">ETA:</label>
-        <input class="form-control" type="date" value="" 
-        id="example-date-input" name="bug_close_date">
+        <input class="form-control" type="date" id="example-date-input" 
+            name="bug_close_date">
     </div>
 
     <div class="form-group">
         <label for="post_content">Bug Description: </label>
         <textarea class="form-control" name="bug_description" id="body" 
-        cols="30" rows="10">
+            cols="30" rows="10">
         </textarea>
     </div>
 
     <div class="form-group">
       <input class="btn btn-primary" type="submit" name="create_bug" 
-      value="Create Bug">
+          value="Create Bug">
     </div>  
 </form>
