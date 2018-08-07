@@ -22,13 +22,12 @@
     </thead>
     <tbody>
         <?php
-            //pageination;
+            // Pageination;
             include "../dispaly_constant.php";
 
+            $page_num = '';
             if (isset($_GET['page'])) {
                 $page_num = $_GET['page'];
-            } else {
-                $page_num = '';
             }
             if ($page_num == '' || $page_num == 1){
                 $each_page_display_num = 0;
@@ -49,20 +48,20 @@
                 $source = '';
             }
             $query = appendSortBy($query, $source);
-            $query .= "LIMIT $each_page_display_num, $DISPLAY_PER_PAGE ";
+            $query .= "LIMIT $each_page_display_num, $DISPLAY_PER_PAGE";
 
-            $bugs = mysqli_query($connection,$query);
+            $bugs = mysqli_query($connection, $query);
 
-            while($row = mysqli_fetch_assoc($bugs)){
+            while ($row = mysqli_fetch_assoc($bugs)) {
                 $currentBug = new Bug($row);
-                 $user = search_user_by_id($currentBug->reporter_id); 
-                 $reporter_email = mysqli_fetch_assoc($user)['user_email'];
+                $user = search_user_by_id($currentBug->reporter_id); 
+                $reporter_email = mysqli_fetch_assoc($user)['user_email'];
 
                 echo "<tr>";
                 echo "<td> $currentBug->id</td>";
                 echo "<td> $currentBug->priority</td>";
                 echo "<td><a href='bug.php?b_id=
-                {$currentBug->id}'>$currentBug->title</a></td>";
+                    {$currentBug->id}'>$currentBug->title</a></td>";
                 echo "<td> $reporter_email</td>";
                 echo "<td>$_SESSION[email]</td>";
                 echo "<td>$currentBug->status</td>";

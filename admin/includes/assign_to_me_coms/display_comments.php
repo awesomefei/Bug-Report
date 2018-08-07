@@ -17,7 +17,7 @@ while($row = mysqli_fetch_array($comment_query)){
     <div class="media col-lg-10">
       <img class="align-self-start mr-3" src="../image/
       <?php echo $user->image ?>" alt="Generic placeholder image" 
-         style="width:50px;height:50px;">
+          style="width:50px;height:50px;">
       <div class="media-body">
         <h5 class="mt-0">
             <?php echo $user->firstname . " " . $user->lastname; ?>

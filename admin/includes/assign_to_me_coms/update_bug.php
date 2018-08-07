@@ -1,42 +1,7 @@
-<script>
-    //Dynamic Priority Option
-    var priorityLen = 
-        document.getElementById("bugPriority").options.length;
-    var str = <?php echo json_encode($bug_pre_priority) ?>;
-    for ( var i = 0; i < priorityLen; i++ ) {
-        if(document.getElementById("bugPriority").options[i].text 
-           == str){
-            document.getElementById("bugPriority").options[i].selected = true;
-           }
-    }
-    //Reassign
-    var reassignLen = document.getElementById("reassign").options.length;
-    var str = <?php echo json_encode($assignee_email) ?>;
-
-    for ( var i = 0; i < priorityLen; i++ ) {
-        if(document.getElementById("reassign").options[i].text == str){
-            document.getElementById("reassign").options[i].selected = true;
-           }
-    }
-    //Dynamic Status Option
-    var statusLen = document.getElementById("bugStatus").options.length;
-    var str = <?php echo json_encode($bug_pre_status) ?>;
-    for ( var i = 0; i < statusLen; i++ ) {
-        if(document.getElementById("bugStatus").options[i].text == str){
-            document.getElementById("bugStatus").options[i].selected = true;
-           }
-    }
-    //Dynamic Serverity Option
-    var serverityLen = document.getElementById("bugServerity").options.length;
-    var str = <?php echo json_encode($bug_pre_severity) ?>;
-    for ( var i = 0; i < serverityLen; i++ ) {
-        if(document.getElementById("bugServerity").options[i].text == str){
-            document.getElementById("bugServerity").options[i].selected = true;
-           }
-    }           
-</script> 
 <?php
 if(isset($_POST['update_bug'])){
+    
+
     $arr = array();
 
     $bug_new_status = $_POST['bug_status'];
@@ -136,44 +101,44 @@ if(isset($_POST['update_bug'])){
             </select>         
         </div>
 
-    <div class="form-group">
-    <label for="status">Priority: </label>   
-    <select name="bug_priority" id="bugPriority">
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-     </select>
-    </div>
+        <div class="form-group">
+        <label for="status">Priority: </label>   
+        <select name="bug_priority" id="bugPriority">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+         </select>
+        </div>
 
-     <div class="form-group">
-        <label for="status">Severity: </label>   
-        <select class="custom-select custom-select-lg mb-3" 
-          name="bug_serverity" id="bugServerity">
-           <?php
-            $enumList = iterate_enum_in_table('bug', 'bug_severity');
-             foreach($enumList as $value)
-                echo "<option value='{$value}'>$value</option>";
-            ?>
-        </select>         
-    </div>  
+        <div class="form-group">
+            <label for="status">Severity: </label>   
+            <select class="custom-select custom-select-lg mb-3" 
+                name="bug_serverity" id="bugServerity">
+                <?php
+                    $enumList = iterate_enum_in_table('bug', 'bug_severity');
+                    foreach($enumList as $value) {
+                        echo "<option value='{$value}'>$value</option>";
+                    }
+                ?>
+            </select>         
+        </div>  
         <div class="form-group">
             <label for="status">Bloked by: </label>   
             <select class="custom-select custom-select-lg mb-3" name="">
                <?php
-                $users_query = get_all_users();
-                while($row = mysqli_fetch_assoc($users_query)){
-                    $user_email = $row[user_email];
-                    echo "<option value='{$user_email}'>$user_email
-                    </option>";
-                }
+                    $users_query = get_all_users();
+                    while($row = mysqli_fetch_assoc($users_query)){
+                        $user_email = $row[user_email];
+                        echo "<option value='{$user_email}'>$user_email
+                        </option>";
+                    }
                 ?>
             </select>         
         </div>  
-    <div class="form-group">
-      <input class="btn btn-primary" type="submit" name="update_bug" 
-      value="Update Bug" >
-    </div>
-
+        <div class="form-group">
+          <input class="btn btn-primary" type="submit" name="update_bug" 
+              value="Update Bug" >
+        </div>
     </form>
 </div>
 

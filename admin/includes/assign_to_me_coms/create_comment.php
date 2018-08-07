@@ -9,7 +9,8 @@
             increase_comment_query($bug_comment_count,$the_bug_id);    
             redirect("/BugReport/admin/bug.php?b_id={$the_bug_id}");
         }else{
-            echo"<script>alert('Bug Comment Fields cannot be empty')</script>";
+            echo"<script>alert('Bug Comment Fields cannot be empty')
+            </script>";
         }
     }
 ?>
